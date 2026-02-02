@@ -1,15 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { View, Text, StyleSheet } from 'react-native';
 import {
   OnboardingWelcome,
   OnboardingRaceSelection,
   OnboardingLevelSelection,
   OnboardingFrequency,
   OnboardingDuration,
+  HomeScreen,
+  WorkoutDetailScreen,
 } from './src/screens';
-import { RaceType, RunnerLevel, DayOfWeek, UserProfile } from './src/types';
-import { colors, typography, spacing } from './src/design-system';
+import { RaceType, RunnerLevel, DayOfWeek, UserProfile, TrainingPlan, Workout } from './src/types';
+import { generateTrainingPlan } from './src/utils';
 
 // Les différentes étapes de l'app
 type Screen =
@@ -18,7 +19,8 @@ type Screen =
   | 'level-selection'
   | 'frequency'
   | 'duration'
-  | 'home';
+  | 'home'
+  | 'workout-detail';
 
 export default function App() {
   // Navigation
@@ -27,7 +29,13 @@ export default function App() {
   // Données utilisateur collectées pendant l'onboarding
   const [userProfile, setUserProfile] = useState<Partial<UserProfile>>({});
 
-  // Handlers de navigation
+  // Plan d'entraînement généré
+  const [trainingPlan, setTrainingPlan] = useState<TrainingPlan | null>(null);
+
+  // Séance sélectionnée pour le détail
+  const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
+
+  // Handlers de navigation - Onboarding
   const handleGetStarted = () => {
     setCurrentScreen('race-selection');
   };
@@ -55,20 +63,63 @@ export default function App() {
       availableDays: userProfile.availableDays!,
       trainingWeeks,
     };
+
+    // Générer le plan d'entraînement
+    const plan = generateTrainingPlan(completeProfile);
+    setTrainingPlan(plan);
     setUserProfile(completeProfile);
-    console.log('Profil complet:', completeProfile);
     setCurrentScreen('home');
   };
 
-  // Handlers retour
+  // Handlers retour - Onboarding
   const handleBackToRace = () => setCurrentScreen('race-selection');
   const handleBackToLevel = () => setCurrentScreen('level-selection');
   const handleBackToFrequency = () => setCurrentScreen('frequency');
+
+  // Handlers - Home
+  const handleWorkoutPress = (workout: Workout) => {
+    setSelectedWorkout(workout);
+    setCurrentScreen('workout-detail');
+  };
+
+  const handleToggleComplete = (workoutId: string) => {
+    if (!trainingPlan) return;
+
+    setTrainingPlan((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        workouts: prev.workouts.map((w) =>
+          w.id === workoutId ? { ...w, completed: !w.completed } : w
+        ),
+      };
+    });
+
+    // Mettre à jour aussi selectedWorkout si c'est la même séance
+    if (selectedWorkout?.id === workoutId) {
+      setSelectedWorkout((prev) =>
+        prev ? { ...prev, completed: !prev.completed } : prev
+      );
+    }
+  };
+
+  // Handlers - Workout Detail
+  const handleBackToHome = () => {
+    setSelectedWorkout(null);
+    setCurrentScreen('home');
+  };
+
+  const handleToggleSelectedComplete = () => {
+    if (selectedWorkout) {
+      handleToggleComplete(selectedWorkout.id);
+    }
+  };
 
   return (
     <>
       <StatusBar style="dark" />
 
+      {/* Onboarding */}
       {currentScreen === 'welcome' && (
         <OnboardingWelcome onGetStarted={handleGetStarted} />
       )}
@@ -98,50 +149,22 @@ export default function App() {
         />
       )}
 
-      {currentScreen === 'home' && (
-        <View style={styles.homeContainer}>
-          <Text style={styles.homeEmoji}>🎉</Text>
-          <Text style={styles.homeTitle}>C'est parti !</Text>
-          <Text style={styles.homeSubtitle}>
-            Ton plan de {userProfile.trainingWeeks} semaines pour le{' '}
-            {userProfile.raceType} est prêt.
-          </Text>
-          <Text style={styles.homeDetails}>
-            {userProfile.weeklyFrequency} séances/semaine • Niveau{' '}
-            {userProfile.level}
-          </Text>
-        </View>
+      {/* App principale */}
+      {currentScreen === 'home' && trainingPlan && (
+        <HomeScreen
+          plan={trainingPlan}
+          onWorkoutPress={handleWorkoutPress}
+          onToggleComplete={handleToggleComplete}
+        />
+      )}
+
+      {currentScreen === 'workout-detail' && selectedWorkout && (
+        <WorkoutDetailScreen
+          workout={selectedWorkout}
+          onBack={handleBackToHome}
+          onToggleComplete={handleToggleSelectedComplete}
+        />
       )}
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  homeContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.neutral[0],
-    padding: spacing.lg,
-  },
-  homeEmoji: {
-    fontSize: 64,
-    marginBottom: spacing.lg,
-  },
-  homeTitle: {
-    fontSize: typography.fontSize['3xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: colors.primary[500],
-    marginBottom: spacing.sm,
-  },
-  homeSubtitle: {
-    fontSize: typography.fontSize.lg,
-    color: colors.neutral[700],
-    textAlign: 'center',
-    marginBottom: spacing.md,
-  },
-  homeDetails: {
-    fontSize: typography.fontSize.md,
-    color: colors.neutral[500],
-  },
-});
