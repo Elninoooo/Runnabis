@@ -8,3 +8,5 @@
 export { Button } from './Button';
 export { Card } from './Card';
 export { SelectCard } from './SelectCard';
+export { Checkbox } from './Checkbox';
+export { Stepper } from './Stepper';
