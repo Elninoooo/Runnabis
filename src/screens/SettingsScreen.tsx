@@ -5,12 +5,10 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
-  TouchableOpacity,
-  Switch,
 } from 'react-native';
-import { Button } from '../components';
+import { Moon, Palette, Target, Dumbbell, Calendar, Clock, RotateCcw } from 'lucide-react-native';
+import { Button, ScreenHeader, ListItem } from '../components';
 import { useTheme } from '../design-system';
-import { ThemeMode } from '../design-system/theme';
 import { UserProfile } from '../types';
 
 interface SettingsScreenProps {
@@ -60,13 +58,11 @@ export function SettingsScreen({
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background.primary }]}>
       {/* Header */}
-      <View style={[styles.header, { paddingHorizontal: spacing.lg, paddingTop: spacing.md, paddingBottom: spacing.lg, borderBottomWidth: 1, borderBottomColor: colors.border.default }]}>
-        <Button label="← Retour" onPress={onBack} variant="ghost" size="sm" />
-        <Text style={[styles.headerTitle, { fontSize: typography.fontSize.xl, fontWeight: typography.fontWeight.bold, color: colors.text.primary }]}>
-          Paramètres
-        </Text>
-        <View style={styles.headerSpacer} />
-      </View>
+      <ScreenHeader
+        title="Paramètres"
+        onBack={onBack}
+        showBorder
+      />
 
       <ScrollView
         style={styles.content}
@@ -80,43 +76,22 @@ export function SettingsScreen({
           </Text>
 
           <View style={[styles.card, { backgroundColor: colors.background.surface, borderRadius: borderRadius.lg, overflow: 'hidden' }]}>
-            <TouchableOpacity
-              style={[styles.settingRow, { padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border.subtle }]}
-              onPress={handleThemeToggle}
-              activeOpacity={0.7}
-            >
-              <View style={styles.settingInfo}>
-                <Text style={{ fontSize: 24, marginRight: spacing.md }}>🌙</Text>
-                <View>
-                  <Text style={[styles.settingLabel, { fontSize: typography.fontSize.md, fontWeight: typography.fontWeight.medium, color: colors.text.primary }]}>
-                    Mode sombre
-                  </Text>
-                  <Text style={[styles.settingDescription, { fontSize: typography.fontSize.sm, color: colors.text.muted, marginTop: 2 }]}>
-                    {isDarkMode ? 'Activé' : 'Désactivé'}
-                  </Text>
-                </View>
-              </View>
-              <Switch
-                value={isDarkMode}
-                onValueChange={handleThemeToggle}
-                trackColor={{ false: colors.background.muted, true: colors.accent.default }}
-                thumbColor={colors.background.surface}
-              />
-            </TouchableOpacity>
+            <ListItem
+              type="toggle"
+              icon={<Moon size={20} color={colors.text.secondary} strokeWidth={2} />}
+              title="Mode sombre"
+              description={isDarkMode ? 'Activé' : 'Désactivé'}
+              value={isDarkMode}
+              onValueChange={handleThemeToggle}
+            />
 
-            <View style={[styles.settingRow, { padding: spacing.md }]}>
-              <View style={styles.settingInfo}>
-                <Text style={{ fontSize: 24, marginRight: spacing.md }}>🎨</Text>
-                <View>
-                  <Text style={[styles.settingLabel, { fontSize: typography.fontSize.md, fontWeight: typography.fontWeight.medium, color: colors.text.primary }]}>
-                    Thème
-                  </Text>
-                  <Text style={[styles.settingDescription, { fontSize: typography.fontSize.sm, color: colors.text.muted, marginTop: 2 }]}>
-                    Warm Adult (Teal & Crème)
-                  </Text>
-                </View>
-              </View>
-            </View>
+            <ListItem
+              type="info"
+              icon={<Palette size={20} color={colors.text.secondary} strokeWidth={2} />}
+              title="Thème"
+              value="Warm Adult"
+              showBorder={false}
+            />
           </View>
         </View>
 
@@ -127,53 +102,34 @@ export function SettingsScreen({
           </Text>
 
           <View style={[styles.card, { backgroundColor: colors.background.surface, borderRadius: borderRadius.lg, overflow: 'hidden' }]}>
-            <View style={[styles.profileRow, { padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border.subtle }]}>
-              <Text style={{ fontSize: 24, marginRight: spacing.md }}>🎯</Text>
-              <View style={styles.profileInfo}>
-                <Text style={[styles.profileLabel, { fontSize: typography.fontSize.sm, color: colors.text.muted }]}>
-                  Objectif
-                </Text>
-                <Text style={[styles.profileValue, { fontSize: typography.fontSize.md, fontWeight: typography.fontWeight.medium, color: colors.text.primary }]}>
-                  {getRaceLabel()}
-                </Text>
-              </View>
-            </View>
+            <ListItem
+              type="info"
+              icon={<Target size={20} color={colors.text.secondary} strokeWidth={2} />}
+              title="Objectif"
+              value={getRaceLabel()}
+            />
 
-            <View style={[styles.profileRow, { padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border.subtle }]}>
-              <Text style={{ fontSize: 24, marginRight: spacing.md }}>💪</Text>
-              <View style={styles.profileInfo}>
-                <Text style={[styles.profileLabel, { fontSize: typography.fontSize.sm, color: colors.text.muted }]}>
-                  Niveau
-                </Text>
-                <Text style={[styles.profileValue, { fontSize: typography.fontSize.md, fontWeight: typography.fontWeight.medium, color: colors.text.primary }]}>
-                  {getLevelLabel()}
-                </Text>
-              </View>
-            </View>
+            <ListItem
+              type="info"
+              icon={<Dumbbell size={20} color={colors.text.secondary} strokeWidth={2} />}
+              title="Niveau"
+              value={getLevelLabel()}
+            />
 
-            <View style={[styles.profileRow, { padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border.subtle }]}>
-              <Text style={{ fontSize: 24, marginRight: spacing.md }}>📅</Text>
-              <View style={styles.profileInfo}>
-                <Text style={[styles.profileLabel, { fontSize: typography.fontSize.sm, color: colors.text.muted }]}>
-                  Fréquence
-                </Text>
-                <Text style={[styles.profileValue, { fontSize: typography.fontSize.md, fontWeight: typography.fontWeight.medium, color: colors.text.primary }]}>
-                  {profile.weeklyFrequency} séances / semaine
-                </Text>
-              </View>
-            </View>
+            <ListItem
+              type="info"
+              icon={<Calendar size={20} color={colors.text.secondary} strokeWidth={2} />}
+              title="Fréquence"
+              value={`${profile.weeklyFrequency} séances / semaine`}
+            />
 
-            <View style={[styles.profileRow, { padding: spacing.md }]}>
-              <Text style={{ fontSize: 24, marginRight: spacing.md }}>⏱️</Text>
-              <View style={styles.profileInfo}>
-                <Text style={[styles.profileLabel, { fontSize: typography.fontSize.sm, color: colors.text.muted }]}>
-                  Durée du plan
-                </Text>
-                <Text style={[styles.profileValue, { fontSize: typography.fontSize.md, fontWeight: typography.fontWeight.medium, color: colors.text.primary }]}>
-                  {profile.trainingWeeks} semaines
-                </Text>
-              </View>
-            </View>
+            <ListItem
+              type="info"
+              icon={<Clock size={20} color={colors.text.secondary} strokeWidth={2} />}
+              title="Durée du plan"
+              value={`${profile.trainingWeeks} semaines`}
+              showBorder={false}
+            />
           </View>
         </View>
 
@@ -184,16 +140,15 @@ export function SettingsScreen({
               Données
             </Text>
 
-            <View style={[styles.card, { backgroundColor: colors.background.surface, borderRadius: borderRadius.lg, padding: spacing.md }]}>
-              <Button
-                label="Recommencer l'onboarding"
+            <View style={[styles.card, { backgroundColor: colors.background.surface, borderRadius: borderRadius.lg, overflow: 'hidden' }]}>
+              <ListItem
+                type="navigation"
+                icon={<RotateCcw size={20} color={colors.semantic.error} strokeWidth={2} />}
+                title="Recommencer l'onboarding"
+                description="Réinitialise ton plan d'entraînement"
                 onPress={onResetOnboarding}
-                variant="secondary"
-                fullWidth
+                showBorder={false}
               />
-              <Text style={[styles.warningText, { fontSize: typography.fontSize.xs, color: colors.text.muted, textAlign: 'center', marginTop: spacing.sm }]}>
-                Cela réinitialisera ton plan d'entraînement
-              </Text>
             </View>
           </View>
         )}
@@ -204,7 +159,7 @@ export function SettingsScreen({
             Runnabis v1.0.0
           </Text>
           <Text style={[styles.copyright, { fontSize: typography.fontSize.xs, color: colors.text.muted, textAlign: 'center', marginTop: spacing.xs }]}>
-            Fait avec ❤️ pour les coureurs
+            Fait avec soin pour les coureurs
           </Text>
         </View>
       </ScrollView>
@@ -215,15 +170,6 @@ export function SettingsScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  headerTitle: {},
-  headerSpacer: {
-    width: 80, // Pour équilibrer le bouton retour
   },
   content: {
     flex: 1,
@@ -236,34 +182,6 @@ const styles = StyleSheet.create({
 
   // Card
   card: {},
-
-  // Setting row
-  settingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  settingInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  settingLabel: {},
-  settingDescription: {},
-
-  // Profile row
-  profileRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  profileInfo: {
-    flex: 1,
-  },
-  profileLabel: {},
-  profileValue: {},
-
-  // Warning
-  warningText: {},
 
   // Footer
   footer: {},

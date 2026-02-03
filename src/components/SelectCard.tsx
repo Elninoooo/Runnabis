@@ -8,8 +8,8 @@ import {
 import { useTheme } from '../design-system';
 
 export interface SelectCardProps {
-  /** Emoji ou icône affichée (optionnel en attendant les vraies icônes) */
-  emoji?: string;
+  /** Icône à afficher (composant Lucide) */
+  icon?: React.ReactNode;
   /** Titre principal */
   title: string;
   /** Description optionnelle */
@@ -27,9 +27,22 @@ export interface SelectCardProps {
  * Affiche un état sélectionné avec une bordure colorée.
  *
  * Supporte le Dark Mode.
+ *
+ * @example
+ * ```tsx
+ * import { Target } from 'lucide-react-native';
+ *
+ * <SelectCard
+ *   icon={<Target size={24} color={colors.accent.default} />}
+ *   title="Semi-marathon"
+ *   description="21,1 km"
+ *   selected={selected}
+ *   onPress={() => setSelected(true)}
+ * />
+ * ```
  */
 export function SelectCard({
-  emoji,
+  icon,
   title,
   description,
   selected = false,
@@ -71,8 +84,8 @@ export function SelectCard({
         )}
       </View>
 
-      {/* Emoji (optionnel) */}
-      {emoji && <Text style={styles.emoji}>{emoji}</Text>}
+      {/* Icône (optionnel) */}
+      {icon && <View style={styles.iconContainer}>{icon}</View>}
 
       {/* Contenu */}
       <View style={styles.textContainer}>
@@ -126,8 +139,11 @@ const styles = StyleSheet.create({
     height: 12,
     borderRadius: 6,
   },
-  emoji: {
-    fontSize: 32,
+  iconContainer: {
+    width: 32,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   textContainer: {
     flex: 1,

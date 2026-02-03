@@ -6,9 +6,28 @@ import {
   SafeAreaView,
   ScrollView,
 } from 'react-native';
-import { Button } from '../components';
+import {
+  Check,
+  MessageCircle,
+  Heart,
+  Target,
+  Flame,
+  Zap,
+  Activity,
+  Droplets,
+  Apple,
+  Timer,
+  Brain,
+  Snail,
+  Smile,
+  Dumbbell,
+  Moon,
+  Salad,
+} from 'lucide-react-native';
+import { Button, ScreenHeader } from '../components';
+import { WorkoutIllustration } from '../components/illustrations';
 import { useTheme } from '../design-system';
-import { Workout } from '../types';
+import { Workout, WorkoutType } from '../types';
 import { WORKOUT_INFO } from '../utils';
 
 interface WorkoutDetailScreenProps {
@@ -20,6 +39,40 @@ interface WorkoutDetailScreenProps {
   onToggleComplete: () => void;
 }
 
+// Mapping des conseils par type de workout avec icônes Lucide
+const WORKOUT_TIPS: Record<WorkoutType, { icon: React.ComponentType<any>; text: string }[]> = {
+  'endurance-fondamentale': [
+    { icon: MessageCircle, text: 'Tu dois pouvoir tenir une conversation' },
+    { icon: Heart, text: 'Reste en zone 2 (60-70% FCM)' },
+    { icon: Target, text: "L'objectif est la durée, pas la vitesse" },
+  ],
+  'fractionne': [
+    { icon: Flame, text: 'Échauffe-toi bien pendant 10-15 min' },
+    { icon: Zap, text: 'Les phases rapides : tu ne peux pas parler' },
+    { icon: Activity, text: 'Récupération active entre les intervalles' },
+  ],
+  'sortie-longue': [
+    { icon: Droplets, text: 'Hydrate-toi avant et pendant' },
+    { icon: Apple, text: 'Prévois une collation si > 1h30' },
+    { icon: Snail, text: 'Pars doucement, tu accéléreras à la fin' },
+  ],
+  'allure-specifique': [
+    { icon: Timer, text: 'Utilise un GPS pour contrôler ton allure' },
+    { icon: Target, text: "C'est l'allure de ta course objectif" },
+    { icon: Brain, text: 'Mémorise les sensations à cette vitesse' },
+  ],
+  'recuperation': [
+    { icon: Snail, text: 'Vraiment très lent, c\'est le but !' },
+    { icon: Smile, text: 'Profite du paysage, détends-toi' },
+    { icon: Dumbbell, text: 'Ça aide tes muscles à récupérer' },
+  ],
+  'repos': [
+    { icon: Moon, text: "Le repos fait partie de l'entraînement" },
+    { icon: Activity, text: 'Étirements ou yoga si tu veux bouger' },
+    { icon: Salad, text: 'Mange bien et dors suffisamment' },
+  ],
+};
+
 /**
  * WorkoutDetailScreen - Détail d'une séance
  */
@@ -30,6 +83,7 @@ export function WorkoutDetailScreen({
 }: WorkoutDetailScreenProps) {
   const { colors, typography, spacing, borderRadius } = useTheme();
   const info = WORKOUT_INFO[workout.type];
+  const tips = WORKOUT_TIPS[workout.type] || [];
 
   // Formater la date
   const formatDate = (date: Date) => {
@@ -48,9 +102,10 @@ export function WorkoutDetailScreen({
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background.primary }]}>
       {/* Header */}
-      <View style={[styles.header, { paddingHorizontal: spacing.md, paddingTop: spacing.sm }]}>
-        <Button label="← Retour" onPress={onBack} variant="ghost" size="sm" />
-      </View>
+      <ScreenHeader
+        title={info.title}
+        onBack={onBack}
+      />
 
       <ScrollView
         style={styles.content}
@@ -58,11 +113,10 @@ export function WorkoutDetailScreen({
         showsVerticalScrollIndicator={false}
       >
         {/* Hero */}
-        <View style={[styles.hero, { backgroundColor: info.color + '20', paddingVertical: spacing['2xl'], paddingHorizontal: spacing.lg }]}>
-          <Text style={styles.emoji}>{info.emoji}</Text>
-          <Text style={[styles.title, { fontSize: typography.fontSize['2xl'], fontWeight: typography.fontWeight.bold, color: colors.text.primary, marginBottom: spacing.xs }]}>
-            {info.title}
-          </Text>
+        <View style={[styles.hero, { backgroundColor: info.color + '15', paddingVertical: spacing['2xl'], paddingHorizontal: spacing.lg }]}>
+          <View style={[styles.illustrationContainer, { marginBottom: spacing.lg }]}>
+            <WorkoutIllustration type={workout.type} size="lg" />
+          </View>
           <Text style={[styles.date, { fontSize: typography.fontSize.md, color: colors.text.secondary, marginBottom: spacing.lg }]}>
             {formatDate(workout.date)}
           </Text>
@@ -92,9 +146,10 @@ export function WorkoutDetailScreen({
 
         {/* Status */}
         {workout.completed && (
-          <View style={[styles.completedBanner, { backgroundColor: colors.accent.soft, paddingVertical: spacing.sm }]}>
+          <View style={[styles.completedBanner, { backgroundColor: colors.accent.soft, paddingVertical: spacing.sm, paddingHorizontal: spacing.md, gap: spacing.xs }]}>
+            <Check size={18} color={colors.accent.default} strokeWidth={2.5} />
             <Text style={[styles.completedText, { fontSize: typography.fontSize.md, fontWeight: typography.fontWeight.medium, color: colors.accent.default }]}>
-              ✓ Séance terminée
+              Séance terminée
             </Text>
           </View>
         )}
@@ -109,54 +164,19 @@ export function WorkoutDetailScreen({
           </Text>
         </View>
 
-        {/* Conseils selon le type */}
-        <View style={[styles.section, { paddingHorizontal: spacing.lg, paddingTop: spacing.lg }]}>
-          <Text style={[styles.sectionTitle, { fontSize: typography.fontSize.lg, fontWeight: typography.fontWeight.semibold, color: colors.text.primary, marginBottom: spacing.sm }]}>
-            Conseils
-          </Text>
-          {workout.type === 'endurance-fondamentale' && (
-            <View style={[styles.tips, { gap: spacing.sm }]}>
-              <TipItem emoji="💬" text="Tu dois pouvoir tenir une conversation" />
-              <TipItem emoji="❤️" text="Reste en zone 2 (60-70% FCM)" />
-              <TipItem emoji="🎯" text="L'objectif est la durée, pas la vitesse" />
+        {/* Conseils */}
+        {tips.length > 0 && (
+          <View style={[styles.section, { paddingHorizontal: spacing.lg, paddingTop: spacing.lg }]}>
+            <Text style={[styles.sectionTitle, { fontSize: typography.fontSize.lg, fontWeight: typography.fontWeight.semibold, color: colors.text.primary, marginBottom: spacing.sm }]}>
+              Conseils
+            </Text>
+            <View style={[styles.tips, { gap: spacing.md }]}>
+              {tips.map((tip, index) => (
+                <TipItem key={index} Icon={tip.icon} text={tip.text} />
+              ))}
             </View>
-          )}
-          {workout.type === 'fractionne' && (
-            <View style={[styles.tips, { gap: spacing.sm }]}>
-              <TipItem emoji="🔥" text="Échauffe-toi bien pendant 10-15 min" />
-              <TipItem emoji="⚡" text="Les phases rapides : tu ne peux pas parler" />
-              <TipItem emoji="🧘" text="Récupération active entre les intervalles" />
-            </View>
-          )}
-          {workout.type === 'sortie-longue' && (
-            <View style={[styles.tips, { gap: spacing.sm }]}>
-              <TipItem emoji="💧" text="Hydrate-toi avant et pendant" />
-              <TipItem emoji="🍌" text="Prévois une collation si > 1h30" />
-              <TipItem emoji="🐢" text="Pars doucement, tu accéléreras à la fin" />
-            </View>
-          )}
-          {workout.type === 'allure-specifique' && (
-            <View style={[styles.tips, { gap: spacing.sm }]}>
-              <TipItem emoji="⏱️" text="Utilise un GPS pour contrôler ton allure" />
-              <TipItem emoji="🎯" text="C'est l'allure de ta course objectif" />
-              <TipItem emoji="🧠" text="Mémorise les sensations à cette vitesse" />
-            </View>
-          )}
-          {workout.type === 'recuperation' && (
-            <View style={[styles.tips, { gap: spacing.sm }]}>
-              <TipItem emoji="🐌" text="Vraiment très lent, c'est le but !" />
-              <TipItem emoji="😊" text="Profite du paysage, détends-toi" />
-              <TipItem emoji="💪" text="Ça aide tes muscles à récupérer" />
-            </View>
-          )}
-          {workout.type === 'repos' && (
-            <View style={[styles.tips, { gap: spacing.sm }]}>
-              <TipItem emoji="😴" text="Le repos fait partie de l'entraînement" />
-              <TipItem emoji="🧘" text="Étirements ou yoga si tu veux bouger" />
-              <TipItem emoji="🍽️" text="Mange bien et dors suffisamment" />
-            </View>
-          )}
-        </View>
+          </View>
+        )}
       </ScrollView>
 
       {/* Footer */}
@@ -174,12 +194,14 @@ export function WorkoutDetailScreen({
 }
 
 // Composant pour un conseil
-function TipItem({ emoji, text }: { emoji: string; text: string }) {
+function TipItem({ Icon, text }: { Icon: React.ComponentType<any>; text: string }) {
   const { colors, typography, spacing } = useTheme();
 
   return (
-    <View style={[styles.tipItem, { gap: spacing.sm }]}>
-      <Text style={styles.tipEmoji}>{emoji}</Text>
+    <View style={[styles.tipItem, { gap: spacing.md }]}>
+      <View style={[styles.tipIconContainer, { backgroundColor: colors.background.muted, borderRadius: 8, padding: spacing.sm }]}>
+        <Icon size={18} color={colors.text.secondary} strokeWidth={2} />
+      </View>
       <Text style={[styles.tipText, { fontSize: typography.fontSize.md, color: colors.text.secondary, lineHeight: typography.fontSize.md * typography.lineHeight.normal }]}>
         {text}
       </Text>
@@ -191,7 +213,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {},
   content: {
     flex: 1,
   },
@@ -201,11 +222,7 @@ const styles = StyleSheet.create({
   hero: {
     alignItems: 'center',
   },
-  emoji: {
-    fontSize: 64,
-    marginBottom: 16,
-  },
-  title: {},
+  illustrationContainer: {},
   date: {},
   stats: {
     flexDirection: 'row',
@@ -218,7 +235,9 @@ const styles = StyleSheet.create({
 
   // Completed banner
   completedBanner: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   completedText: {},
 
@@ -231,11 +250,9 @@ const styles = StyleSheet.create({
   tips: {},
   tipItem: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
-  tipEmoji: {
-    fontSize: 20,
-  },
+  tipIconContainer: {},
   tipText: {
     flex: 1,
   },

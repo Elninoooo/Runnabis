@@ -1,0 +1,1 @@
+export { WorkoutIllustration } from './WorkoutIllustration';

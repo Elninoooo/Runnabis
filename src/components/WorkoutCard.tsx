@@ -1,8 +1,10 @@
 import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import { Check } from 'lucide-react-native';
 import { useTheme } from '../design-system';
 import { Workout } from '../types';
 import { WORKOUT_INFO } from '../utils';
+import { WorkoutIllustration } from './illustrations';
 
 interface WorkoutCardProps {
   /** La séance à afficher */
@@ -17,6 +19,7 @@ interface WorkoutCardProps {
  * WorkoutCard - Carte d'une séance d'entraînement
  *
  * Affiche les infos d'une séance avec son état (à faire / fait).
+ * Utilise des illustrations au lieu d'emojis.
  * Supporte le Dark Mode.
  */
 export function WorkoutCard({ workout, onPress, compact = false }: WorkoutCardProps) {
@@ -49,13 +52,14 @@ export function WorkoutCard({ workout, onPress, compact = false }: WorkoutCardPr
         onPress={onPress}
         activeOpacity={0.7}
       >
-        <Text style={styles.compactEmoji}>{info.emoji}</Text>
+        <WorkoutIllustration type={workout.type} size="sm" />
         <Text
           style={[
             styles.compactTitle,
             {
               fontSize: typography.fontSize.xs,
               color: colors.text.secondary,
+              marginTop: spacing.xs,
             },
             workout.completed && { color: colors.text.muted },
           ]}
@@ -88,7 +92,9 @@ export function WorkoutCard({ workout, onPress, compact = false }: WorkoutCardPr
       <View style={[styles.content, { padding: spacing.md }]}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={[styles.emoji, { marginRight: spacing.sm }]}>{info.emoji}</Text>
+          <View style={{ marginRight: spacing.md }}>
+            <WorkoutIllustration type={workout.type} size="md" />
+          </View>
           <View style={styles.headerText}>
             <Text
               style={[
@@ -157,9 +163,13 @@ export function WorkoutCard({ workout, onPress, compact = false }: WorkoutCardPr
                 paddingVertical: spacing.xs,
                 borderRadius: borderRadius.full,
                 marginTop: spacing.sm,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: spacing.xs,
               },
             ]}
           >
+            <Check size={12} color={colors.accent.default} strokeWidth={2.5} />
             <Text
               style={[
                 styles.completedBadgeText,
@@ -197,9 +207,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  emoji: {
-    fontSize: 28,
-  },
   headerText: {
     flex: 1,
   },
@@ -218,10 +225,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minWidth: 60,
   },
-  compactEmoji: {
-    fontSize: 20,
-  },
-  compactTitle: {
-    marginTop: 2,
-  },
+  compactTitle: {},
 });

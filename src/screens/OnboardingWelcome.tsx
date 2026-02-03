@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
-import { Button } from '../components';
+import { Calendar, Target, TrendingUp } from 'lucide-react-native';
+import { Button, Card } from '../components';
 import { useTheme } from '../design-system';
 
 interface OnboardingWelcomeProps {
@@ -15,7 +16,6 @@ export function OnboardingWelcome({ onGetStarted }: OnboardingWelcomeProps) {
       <View style={[styles.content, { paddingHorizontal: spacing.lg }]}>
         {/* Header */}
         <View style={[styles.header, { paddingTop: spacing['2xl'], paddingBottom: spacing.xl }]}>
-          <Text style={styles.emoji}>🏃</Text>
           <Text style={[
             styles.title,
             {
@@ -40,19 +40,19 @@ export function OnboardingWelcome({ onGetStarted }: OnboardingWelcomeProps) {
         </View>
 
         {/* Features */}
-        <View style={[styles.features, { marginTop: spacing.xl, gap: spacing.lg }]}>
+        <View style={[styles.features, { marginTop: spacing.xl, gap: spacing.md }]}>
           <FeatureItem
-            emoji="📅"
+            icon={<Calendar size={24} color={colors.accent.default} strokeWidth={2} />}
             title="Plan personnalisé"
             description="Un programme adapté à ton niveau et tes disponibilités"
           />
           <FeatureItem
-            emoji="🎯"
+            icon={<Target size={24} color={colors.accent.default} strokeWidth={2} />}
             title="Objectifs clairs"
             description="Des séances variées pour progresser efficacement"
           />
           <FeatureItem
-            emoji="📊"
+            icon={<TrendingUp size={24} color={colors.accent.default} strokeWidth={2} />}
             title="Suivi simple"
             description="Valide tes séances et suis ta progression"
           />
@@ -74,43 +74,55 @@ export function OnboardingWelcome({ onGetStarted }: OnboardingWelcomeProps) {
 
 // Composant pour afficher une feature
 function FeatureItem({
-  emoji,
+  icon,
   title,
   description,
 }: {
-  emoji: string;
+  icon: React.ReactNode;
   title: string;
   description: string;
 }) {
-  const { colors, typography, spacing } = useTheme();
+  const { colors, typography, spacing, borderRadius } = useTheme();
 
   return (
-    <View style={[styles.featureItem, { gap: spacing.md }]}>
-      <Text style={styles.featureEmoji}>{emoji}</Text>
-      <View style={styles.featureText}>
-        <Text style={[
-          styles.featureTitle,
+    <Card variant="filled" padding="md">
+      <View style={[styles.featureItem, { gap: spacing.md }]}>
+        <View style={[
+          styles.featureIconContainer,
           {
-            fontSize: typography.fontSize.lg,
-            fontWeight: typography.fontWeight.semibold,
-            color: colors.text.primary,
-            marginBottom: spacing.xs,
+            width: 48,
+            height: 48,
+            borderRadius: borderRadius.lg,
+            backgroundColor: colors.accent.soft,
           }
         ]}>
-          {title}
-        </Text>
-        <Text style={[
-          styles.featureDescription,
-          {
-            fontSize: typography.fontSize.md,
-            color: colors.text.secondary,
-            lineHeight: typography.fontSize.md * typography.lineHeight.normal,
-          }
-        ]}>
-          {description}
-        </Text>
+          {icon}
+        </View>
+        <View style={styles.featureText}>
+          <Text style={[
+            styles.featureTitle,
+            {
+              fontSize: typography.fontSize.md,
+              fontWeight: typography.fontWeight.semibold,
+              color: colors.text.primary,
+              marginBottom: spacing.xs,
+            }
+          ]}>
+            {title}
+          </Text>
+          <Text style={[
+            styles.featureDescription,
+            {
+              fontSize: typography.fontSize.sm,
+              color: colors.text.secondary,
+              lineHeight: typography.fontSize.sm * typography.lineHeight.normal,
+            }
+          ]}>
+            {description}
+          </Text>
+        </View>
       </View>
-    </View>
+    </Card>
   );
 }
 
@@ -124,10 +136,6 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
   },
-  emoji: {
-    fontSize: 64,
-    marginBottom: 16,
-  },
   title: {},
   subtitle: {
     textAlign: 'center',
@@ -135,10 +143,11 @@ const styles = StyleSheet.create({
   features: {},
   featureItem: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
-  featureEmoji: {
-    fontSize: 32,
+  featureIconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   featureText: {
     flex: 1,

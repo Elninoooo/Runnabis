@@ -1,36 +1,37 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { Zap, Calendar, Target, Mountain } from 'lucide-react-native';
 import { Button, SelectCard } from '../components';
 import { useTheme } from '../design-system';
 
 // Options de durée du plan
 const DURATION_OPTIONS: {
   weeks: number;
-  emoji: string;
+  icon: 'zap' | 'calendar' | 'target' | 'mountain';
   title: string;
   description: string;
 }[] = [
   {
     weeks: 8,
-    emoji: '⚡',
+    icon: 'zap',
     title: '8 semaines',
     description: 'Plan intensif pour les pressés',
   },
   {
     weeks: 10,
-    emoji: '📅',
+    icon: 'calendar',
     title: '10 semaines',
     description: 'Le classique, bien équilibré',
   },
   {
     weeks: 12,
-    emoji: '🎯',
+    icon: 'target',
     title: '12 semaines',
     description: 'Recommandé • Progression optimale',
   },
   {
     weeks: 16,
-    emoji: '🏔️',
+    icon: 'mountain',
     title: '16 semaines',
     description: 'Pour bien se préparer, sans stress',
   },
@@ -53,6 +54,19 @@ export function OnboardingDuration({
   const handleComplete = () => {
     if (selectedWeeks) {
       onComplete(selectedWeeks);
+    }
+  };
+
+  const getIcon = (iconName: string, isSelected: boolean) => {
+    const color = isSelected ? colors.accent.default : colors.text.secondary;
+    const props = { size: 24, color, strokeWidth: 2 };
+
+    switch (iconName) {
+      case 'zap': return <Zap {...props} />;
+      case 'calendar': return <Calendar {...props} />;
+      case 'target': return <Target {...props} />;
+      case 'mountain': return <Mountain {...props} />;
+      default: return null;
     }
   };
 
@@ -98,7 +112,7 @@ export function OnboardingDuration({
         {DURATION_OPTIONS.map((option) => (
           <SelectCard
             key={option.weeks}
-            emoji={option.emoji}
+            icon={getIcon(option.icon, selectedWeeks === option.weeks)}
             title={option.title}
             description={option.description}
             selected={selectedWeeks === option.weeks}

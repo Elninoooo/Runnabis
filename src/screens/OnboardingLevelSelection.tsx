@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { Sprout, Dumbbell, Flame } from 'lucide-react-native';
 import { Button, SelectCard } from '../components';
 import { useTheme } from '../design-system';
 import { RunnerLevel } from '../types';
@@ -7,25 +8,25 @@ import { RunnerLevel } from '../types';
 // Configuration des niveaux disponibles
 const LEVEL_OPTIONS: {
   level: RunnerLevel;
-  emoji: string;
+  icon: 'sprout' | 'dumbbell' | 'flame';
   title: string;
   description: string;
 }[] = [
   {
     level: 'debutant',
-    emoji: '🌱',
+    icon: 'sprout',
     title: 'Débutant',
     description: 'Je débute ou reprends la course à pied',
   },
   {
     level: 'intermediaire',
-    emoji: '💪',
+    icon: 'dumbbell',
     title: 'Intermédiaire',
     description: 'Je cours régulièrement depuis quelques mois',
   },
   {
     level: 'avance',
-    emoji: '🔥',
+    icon: 'flame',
     title: 'Avancé',
     description: 'Je cours depuis plus d\'un an, j\'ai déjà fait des courses',
   },
@@ -48,6 +49,18 @@ export function OnboardingLevelSelection({
   const handleContinue = () => {
     if (selectedLevel) {
       onContinue(selectedLevel);
+    }
+  };
+
+  const getIcon = (iconName: string, isSelected: boolean) => {
+    const color = isSelected ? colors.accent.default : colors.text.secondary;
+    const props = { size: 24, color, strokeWidth: 2 };
+
+    switch (iconName) {
+      case 'sprout': return <Sprout {...props} />;
+      case 'dumbbell': return <Dumbbell {...props} />;
+      case 'flame': return <Flame {...props} />;
+      default: return null;
     }
   };
 
@@ -97,7 +110,7 @@ export function OnboardingLevelSelection({
         {LEVEL_OPTIONS.map((option) => (
           <SelectCard
             key={option.level}
-            emoji={option.emoji}
+            icon={getIcon(option.icon, selectedLevel === option.level)}
             title={option.title}
             description={option.description}
             selected={selectedLevel === option.level}

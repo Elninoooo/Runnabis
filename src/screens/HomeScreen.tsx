@@ -7,7 +7,8 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { WorkoutCard } from '../components';
+import { Settings, Calendar, Lightbulb } from 'lucide-react-native';
+import { WorkoutCard, IconButton } from '../components';
 import { useTheme } from '../design-system';
 import { TrainingPlan, Workout } from '../types';
 
@@ -100,12 +101,13 @@ export function HomeScreen({
 
           {/* Settings button */}
           {onSettingsPress && (
-            <TouchableOpacity
-              style={[styles.settingsButton, { marginLeft: spacing.sm, padding: spacing.sm }]}
+            <IconButton
+              icon={<Settings size={20} color={colors.text.secondary} strokeWidth={2} />}
               onPress={onSettingsPress}
-            >
-              <Text style={{ fontSize: 24 }}>⚙️</Text>
-            </TouchableOpacity>
+              variant="ghost"
+              size="md"
+              style={{ marginLeft: spacing.sm }}
+            />
           )}
         </View>
       </View>
@@ -192,7 +194,9 @@ export function HomeScreen({
       >
         {currentWeekWorkouts.length === 0 ? (
           <View style={[styles.emptyState, { paddingVertical: spacing['2xl'] }]}>
-            <Text style={[styles.emptyEmoji, { marginBottom: spacing.md }]}>📅</Text>
+            <View style={[styles.emptyIcon, { marginBottom: spacing.md }]}>
+              <Calendar size={48} color={colors.text.muted} strokeWidth={1.5} />
+            </View>
             <Text style={[styles.emptyText, { fontSize: typography.fontSize.md, color: colors.text.muted }]}>
               Aucune séance cette semaine
             </Text>
@@ -214,9 +218,12 @@ export function HomeScreen({
 
         {/* Tip */}
         {currentWeekWorkouts.length > 0 && (
-          <Text style={[styles.tip, { fontSize: typography.fontSize.sm, color: colors.text.muted, marginTop: spacing.md }]}>
-            💡 Appui long sur une séance pour la marquer comme terminée
-          </Text>
+          <View style={[styles.tipContainer, { marginTop: spacing.md, gap: spacing.xs }]}>
+            <Lightbulb size={14} color={colors.text.muted} strokeWidth={2} />
+            <Text style={[styles.tip, { fontSize: typography.fontSize.sm, color: colors.text.muted }]}>
+              Appui long sur une séance pour la marquer comme terminée
+            </Text>
+          </View>
         )}
       </ScrollView>
     </SafeAreaView>
@@ -267,14 +274,16 @@ const styles = StyleSheet.create({
   emptyState: {
     alignItems: 'center',
   },
-  emptyEmoji: {
-    fontSize: 48,
-  },
+  emptyIcon: {},
   emptyText: {},
 
   // Tip
+  tipContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   tip: {
-    textAlign: 'center',
     fontStyle: 'italic',
   },
 });

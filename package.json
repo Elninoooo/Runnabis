@@ -16,18 +16,18 @@
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-community/datetimepicker": "^8.6.0",
     "@react-native-community/slider": "^5.1.2",
-    "@storybook/addon-ondevice-actions": "^10.2.1",
-    "@storybook/addon-ondevice-controls": "^10.2.1",
-    "@storybook/react-native": "^10.2.1",
     "babel-loader": "^8.4.1",
     "expo": "~54.0.33",
     "expo-status-bar": "~3.0.9",
+    "lucide-react-native": "^0.563.0",
     "react": "19.1.0",
     "react-native": "0.81.5",
     "react-native-gesture-handler": "^2.30.0",
-    "react-native-reanimated": "^4.2.1",
+    "react-native-reanimated": "~4.1.1",
     "react-native-safe-area-context": "^5.6.2",
-    "react-native-svg": "^15.15.1"
+    "react-native-svg": "^15.15.1",
+    "react-native-worklets": "^0.7.2",
+    "react-native-worklets-core": "^1.6.2"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^8.6.14",

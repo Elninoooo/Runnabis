@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { Route, MapPin, Medal, Trophy } from 'lucide-react-native';
 import { Button, SelectCard } from '../components';
 import { useTheme } from '../design-system';
 import { RaceType } from '../types';
@@ -7,31 +8,31 @@ import { RaceType } from '../types';
 // Configuration des courses disponibles
 const RACE_OPTIONS: {
   type: RaceType;
-  emoji: string;
+  icon: 'route' | 'mapPin' | 'medal' | 'trophy';
   title: string;
   description: string;
 }[] = [
   {
     type: '5K',
-    emoji: '🏃',
+    icon: 'route',
     title: '5 kilomètres',
     description: 'Idéal pour débuter • ~25-35 min',
   },
   {
     type: '10K',
-    emoji: '🏃‍♂️',
+    icon: 'mapPin',
     title: '10 kilomètres',
     description: 'Le classique • ~45-60 min',
   },
   {
     type: 'semi-marathon',
-    emoji: '🏅',
+    icon: 'medal',
     title: 'Semi-marathon',
     description: '21,1 km • ~1h45-2h30',
   },
   {
     type: 'marathon',
-    emoji: '🏆',
+    icon: 'trophy',
     title: 'Marathon',
     description: '42,195 km • Le défi ultime',
   },
@@ -54,6 +55,19 @@ export function OnboardingRaceSelection({
   const handleContinue = () => {
     if (selectedRace) {
       onContinue(selectedRace);
+    }
+  };
+
+  const getIcon = (iconName: string, isSelected: boolean) => {
+    const color = isSelected ? colors.accent.default : colors.text.secondary;
+    const props = { size: 24, color, strokeWidth: 2 };
+
+    switch (iconName) {
+      case 'route': return <Route {...props} />;
+      case 'mapPin': return <MapPin {...props} />;
+      case 'medal': return <Medal {...props} />;
+      case 'trophy': return <Trophy {...props} />;
+      default: return null;
     }
   };
 
@@ -103,7 +117,7 @@ export function OnboardingRaceSelection({
         {RACE_OPTIONS.map((race) => (
           <SelectCard
             key={race.type}
-            emoji={race.emoji}
+            icon={getIcon(race.icon, selectedRace === race.type)}
             title={race.title}
             description={race.description}
             selected={selectedRace === race.type}

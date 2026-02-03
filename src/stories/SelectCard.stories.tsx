@@ -1,7 +1,9 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { View } from 'react-native';
+import { Sprout, Dumbbell, Flame, Route, MapPin, Medal, Trophy } from 'lucide-react-native';
 import { SelectCard } from '../components/SelectCard';
+import { useTheme } from '../design-system';
 
 /**
  * # SelectCard
@@ -11,12 +13,18 @@ import { SelectCard } from '../components/SelectCard';
  *
  * ## Utilisation
  * - Sélection de niveau (débutant, intermédiaire, expert)
- * - Choix de fréquence d'entraînement
+ * - Choix de distance de course
  * - Options de personnalisation
  *
  * ## États
  * - Default : Fond surface, bordure default
  * - Selected : Bordure accent, fond légèrement teinté
+ *
+ * ## Props
+ * - `icon` : ReactNode optionnel (icône Lucide)
+ * - `title` : Titre de la carte
+ * - `description` : Description optionnelle
+ * - `selected` : État sélectionné
  *
  * ## Tokens utilisés
  * - `colors.accent.default` : Bordure quand sélectionné
@@ -41,10 +49,6 @@ const meta: Meta<typeof SelectCard> = {
       control: 'text',
       description: 'Description optionnelle',
     },
-    emoji: {
-      control: 'text',
-      description: 'Emoji optionnel (à remplacer par icônes)',
-    },
   },
   decorators: [
     (Story) => (
@@ -57,6 +61,12 @@ const meta: Meta<typeof SelectCard> = {
 
 export default meta;
 type Story = StoryObj<typeof SelectCard>;
+
+// Helper pour les icônes
+const IconWrapper = ({ Icon, selected }: { Icon: React.ComponentType<any>; selected: boolean }) => {
+  const { colors } = useTheme();
+  return <Icon size={24} color={selected ? colors.accent.default : colors.text.secondary} strokeWidth={2} />;
+};
 
 export const Default: Story = {
   args: {
@@ -85,53 +95,70 @@ export const WithoutDescription: Story = {
 };
 
 export const LevelSelection: Story = {
-  render: () => (
-    <View style={{ gap: 12 }}>
-      <SelectCard
-        title="Débutant"
-        description="Je débute ou reprends la course"
-        selected={false}
-        onPress={() => {}}
-      />
-      <SelectCard
-        title="Intermédiaire"
-        description="Je cours régulièrement depuis quelques mois"
-        selected={true}
-        onPress={() => {}}
-      />
-      <SelectCard
-        title="Confirmé"
-        description="Je cours depuis plusieurs années"
-        selected={false}
-        onPress={() => {}}
-      />
-    </View>
-  ),
+  render: function Render() {
+    const { colors } = useTheme();
+    return (
+      <View style={{ gap: 12 }}>
+        <SelectCard
+          icon={<Sprout size={24} color={colors.text.secondary} strokeWidth={2} />}
+          title="Débutant"
+          description="Je débute ou reprends la course"
+          selected={false}
+          onPress={() => {}}
+        />
+        <SelectCard
+          icon={<Dumbbell size={24} color={colors.accent.default} strokeWidth={2} />}
+          title="Intermédiaire"
+          description="Je cours régulièrement depuis quelques mois"
+          selected={true}
+          onPress={() => {}}
+        />
+        <SelectCard
+          icon={<Flame size={24} color={colors.text.secondary} strokeWidth={2} />}
+          title="Avancé"
+          description="Je cours depuis plus d'un an"
+          selected={false}
+          onPress={() => {}}
+        />
+      </View>
+    );
+  },
 };
 
-export const FrequencySelection: Story = {
-  render: () => (
-    <View style={{ gap: 12 }}>
-      <SelectCard
-        title="2 fois par semaine"
-        selected={false}
-        onPress={() => {}}
-      />
-      <SelectCard
-        title="3 fois par semaine"
-        selected={true}
-        onPress={() => {}}
-      />
-      <SelectCard
-        title="4 fois par semaine"
-        selected={false}
-        onPress={() => {}}
-      />
-      <SelectCard
-        title="5 fois ou plus"
-        selected={false}
-        onPress={() => {}}
-      />
-    </View>
-  ),
+export const RaceSelection: Story = {
+  render: function Render() {
+    const { colors } = useTheme();
+    return (
+      <View style={{ gap: 12 }}>
+        <SelectCard
+          icon={<Route size={24} color={colors.text.secondary} strokeWidth={2} />}
+          title="5 kilomètres"
+          description="Idéal pour débuter • ~25-35 min"
+          selected={false}
+          onPress={() => {}}
+        />
+        <SelectCard
+          icon={<MapPin size={24} color={colors.text.secondary} strokeWidth={2} />}
+          title="10 kilomètres"
+          description="Le classique • ~45-60 min"
+          selected={false}
+          onPress={() => {}}
+        />
+        <SelectCard
+          icon={<Medal size={24} color={colors.accent.default} strokeWidth={2} />}
+          title="Semi-marathon"
+          description="21,1 km • ~1h45-2h30"
+          selected={true}
+          onPress={() => {}}
+        />
+        <SelectCard
+          icon={<Trophy size={24} color={colors.text.secondary} strokeWidth={2} />}
+          title="Marathon"
+          description="42,195 km • Le défi ultime"
+          selected={false}
+          onPress={() => {}}
+        />
+      </View>
+    );
+  },
 };
