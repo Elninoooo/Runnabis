@@ -1,0 +1,345 @@
+/**
+ * Movo Design System - CSS Variables
+ * Direction: "Warm Adult" - Between Bend and Duolingo
+ * 
+ * Usage:
+ * 1. Import this file in your global styles
+ * 2. Use variables like: background-color: var(--color-bg-primary);
+ * 3. For dark mode, add data-theme="dark" to <html> or <body>
+ */
+
+:root {
+  /* ==========================================
+     COLORS - LIGHT MODE (Default)
+     ========================================== */
+  
+  /* Backgrounds */
+  --color-bg-primary: #FAF8F5;
+  --color-bg-surface: #FFFFFF;
+  --color-bg-surface-hover: #F5F3F0;
+  --color-bg-elevated: #FFFFFF;
+  --color-bg-muted: #F0EDE8;
+  
+  /* Text */
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: #6B6560;
+  --color-text-muted: #9A958E;
+  --color-text-inverse: #FFFFFF;
+  
+  /* Accent */
+  --color-accent: #4A9D8E;
+  --color-accent-hover: #3D8577;
+  --color-accent-soft: rgba(74, 157, 142, 0.10);
+  --color-accent-medium: rgba(74, 157, 142, 0.20);
+  
+  /* Semantic */
+  --color-success: #3D8577;
+  --color-success-soft: rgba(61, 133, 119, 0.12);
+  --color-error: #C45D4F;
+  --color-error-soft: rgba(196, 93, 79, 0.12);
+  --color-warning: #D4915A;
+  --color-warning-soft: rgba(212, 145, 90, 0.12);
+  
+  /* Borders */
+  --color-border: #E8E4DE;
+  --color-border-subtle: #F0EDE8;
+  --color-border-strong: #D8D4CE;
+  
+  /* Zone Colors */
+  --color-zone-hips: #F2E0DC;
+  --color-zone-back: #DCE8E0;
+  --color-zone-neck: #E8E4D8;
+  --color-zone-shoulders: #DCE0E8;
+  --color-zone-ankles: #E4DCE8;
+  --color-zone-core: #E8DCD8;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(26, 26, 26, 0.04);
+  --shadow-md: 0 2px 8px rgba(26, 26, 26, 0.04);
+  --shadow-lg: 0 4px 16px rgba(26, 26, 26, 0.06);
+  --shadow-xl: 0 8px 32px rgba(26, 26, 26, 0.08);
+
+  /* ==========================================
+     TYPOGRAPHY
+     ========================================== */
+  
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-mono: 'SF Mono', 'Fira Code', 'Fira Mono', Consolas, monospace;
+  
+  /* Font Sizes */
+  --font-size-xs: 11px;
+  --font-size-sm: 13px;
+  --font-size-base: 15px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 22px;
+  --font-size-2xl: 28px;
+  --font-size-3xl: 34px;
+  
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Line Heights */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
+  
+  /* Letter Spacing */
+  --letter-spacing-tight: -0.5px;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.5px;
+
+  /* ==========================================
+     SPACING
+     ========================================== */
+  
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* ==========================================
+     BORDER RADIUS
+     ========================================== */
+  
+  --radius-none: 0px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-3xl: 28px;
+  --radius-full: 9999px;
+
+  /* ==========================================
+     MOTION
+     ========================================== */
+  
+  --duration-instant: 50ms;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+  --duration-slower: 500ms;
+  
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ==========================================
+     COMPONENT TOKENS
+     ========================================== */
+  
+  /* Buttons */
+  --button-primary-height: 52px;
+  --button-primary-padding: 16px 24px;
+  --button-primary-radius: var(--radius-lg);
+  --button-primary-font-size: var(--font-size-md);
+  
+  --button-secondary-height: 44px;
+  --button-secondary-padding: 12px 20px;
+  --button-secondary-radius: var(--radius-md);
+  --button-secondary-font-size: var(--font-size-base);
+  
+  /* Cards */
+  --card-padding: var(--space-6);
+  --card-radius: var(--radius-2xl);
+  --card-shadow: var(--shadow-lg);
+  
+  /* Badge */
+  --badge-padding: 10px 14px;
+  --badge-radius: 18px;
+  
+  /* Progress Bar */
+  --progress-height: 6px;
+  --progress-radius: 3px;
+  
+  /* Input */
+  --input-height: 48px;
+  --input-padding: 0 var(--space-4);
+  --input-radius: var(--radius-md);
+
+  /* ==========================================
+     BLOB SHAPES (for organic containers)
+     ========================================== */
+  
+  --blob-shape-1: 58% 42% 55% 45% / 45% 55% 45% 55%;
+  --blob-shape-2: 45% 55% 48% 52% / 52% 48% 50% 50%;
+  --blob-shape-3: 52% 48% 45% 55% / 48% 52% 55% 45%;
+  --blob-shape-4: 48% 52% 52% 48% / 55% 45% 48% 52%;
+  --blob-shape-5: 55% 45% 48% 52% / 45% 55% 52% 48%;
+}
+
+/* ==========================================
+   DARK MODE
+   ========================================== */
+
+[data-theme="dark"] {
+  /* Backgrounds */
+  --color-bg-primary: #1A1816;
+  --color-bg-surface: #242220;
+  --color-bg-surface-hover: #2E2C2A;
+  --color-bg-elevated: #302E2C;
+  --color-bg-muted: #1E1C1A;
+  
+  /* Text */
+  --color-text-primary: #F5F2EE;
+  --color-text-secondary: #A8A299;
+  --color-text-muted: #6B665E;
+  --color-text-inverse: #1A1A1A;
+  
+  /* Accent */
+  --color-accent: #5AB9A8;
+  --color-accent-hover: #6DCBB8;
+  --color-accent-soft: rgba(90, 185, 168, 0.12);
+  --color-accent-medium: rgba(90, 185, 168, 0.20);
+  
+  /* Semantic */
+  --color-success: #5AB9A8;
+  --color-success-soft: rgba(90, 185, 168, 0.15);
+  --color-error: #E07A6B;
+  --color-error-soft: rgba(224, 122, 107, 0.15);
+  --color-warning: #E8A86B;
+  --color-warning-soft: rgba(232, 168, 107, 0.15);
+  
+  /* Borders */
+  --color-border: #3A3836;
+  --color-border-subtle: #2E2C2A;
+  --color-border-strong: #4A4846;
+  
+  /* Zone Colors (darker versions) */
+  --color-zone-hips: #4A3638;
+  --color-zone-back: #2E4236;
+  --color-zone-neck: #4A4232;
+  --color-zone-shoulders: #2E3642;
+  --color-zone-ankles: #3E2E4A;
+  --color-zone-core: #4A3A36;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================
+   UTILITY CLASSES
+   ========================================== */
+
+/* Typography */
+.text-display {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.text-h1 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.text-h2 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.3;
+}
+
+.text-h3 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.4;
+}
+
+.text-body {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-normal);
+}
+
+.text-caption {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+}
+
+.text-overline {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.4;
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+/* Blobs */
+.blob-1 { border-radius: var(--blob-shape-1); }
+.blob-2 { border-radius: var(--blob-shape-2); }
+.blob-3 { border-radius: var(--blob-shape-3); }
+.blob-4 { border-radius: var(--blob-shape-4); }
+.blob-5 { border-radius: var(--blob-shape-5); }
+
+/* ==========================================
+   ANIMATIONS
+   ========================================== */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes scaleIn {
+  from { 
+    opacity: 0; 
+    transform: scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--duration-normal) var(--ease-default);
+}
+
+.animate-slide-up {
+  animation: slideUp var(--duration-slow) var(--ease-bounce);
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--duration-normal) var(--ease-default);
+}
+
+.animate-bounce {
+  animation: bounce var(--duration-slower) var(--ease-default);
+}
