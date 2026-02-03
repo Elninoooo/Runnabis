@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { colors, typography, spacing, borderRadius } from '../design-system';
+import { useTheme } from '../design-system';
 
 interface StepperProps {
   /** Valeur actuelle */
@@ -19,6 +19,7 @@ interface StepperProps {
  * Stepper - Sélecteur de nombre
  *
  * Permet d'incrémenter/décrémenter une valeur numérique.
+ * Supporte le Dark Mode.
  */
 export function Stepper({
   value,
@@ -27,6 +28,8 @@ export function Stepper({
   onChange,
   label,
 }: StepperProps) {
+  const { colors, typography, spacing, borderRadius } = useTheme();
+
   const canDecrement = value > min;
   const canIncrement = value < max;
 
@@ -44,30 +47,82 @@ export function Stepper({
 
   return (
     <View style={styles.container}>
-      <View style={styles.stepper}>
+      <View style={[styles.stepper, { gap: spacing.lg }]}>
         <TouchableOpacity
-          style={[styles.button, !canDecrement && styles.buttonDisabled]}
+          style={[
+            styles.button,
+            {
+              borderRadius: borderRadius.full,
+              backgroundColor: canDecrement ? colors.accent.default : colors.background.muted,
+            },
+          ]}
           onPress={handleDecrement}
           disabled={!canDecrement}
           activeOpacity={0.7}
         >
-          <Text style={[styles.buttonText, !canDecrement && styles.buttonTextDisabled]}>
+          <Text
+            style={[
+              styles.buttonText,
+              {
+                color: canDecrement ? colors.text.inverse : colors.text.muted,
+                fontWeight: typography.fontWeight.bold,
+              },
+            ]}
+          >
             −
           </Text>
         </TouchableOpacity>
 
         <View style={styles.valueContainer}>
-          <Text style={styles.value}>{value}</Text>
-          {label && <Text style={styles.label}>{label}</Text>}
+          <Text
+            style={[
+              styles.value,
+              {
+                fontSize: typography.fontSize['4xl'],
+                fontWeight: typography.fontWeight.bold,
+                color: colors.text.primary,
+              },
+            ]}
+          >
+            {value}
+          </Text>
+          {label && (
+            <Text
+              style={[
+                styles.label,
+                {
+                  fontSize: typography.fontSize.sm,
+                  color: colors.text.secondary,
+                  marginTop: spacing.xs,
+                },
+              ]}
+            >
+              {label}
+            </Text>
+          )}
         </View>
 
         <TouchableOpacity
-          style={[styles.button, !canIncrement && styles.buttonDisabled]}
+          style={[
+            styles.button,
+            {
+              borderRadius: borderRadius.full,
+              backgroundColor: canIncrement ? colors.accent.default : colors.background.muted,
+            },
+          ]}
           onPress={handleIncrement}
           disabled={!canIncrement}
           activeOpacity={0.7}
         >
-          <Text style={[styles.buttonText, !canIncrement && styles.buttonTextDisabled]}>
+          <Text
+            style={[
+              styles.buttonText,
+              {
+                color: canIncrement ? colors.text.inverse : colors.text.muted,
+                fontWeight: typography.fontWeight.bold,
+              },
+            ]}
+          >
             +
           </Text>
         </TouchableOpacity>
@@ -83,39 +138,20 @@ const styles = StyleSheet.create({
   stepper: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.lg,
   },
   button: {
     width: 48,
     height: 48,
-    borderRadius: borderRadius.full,
-    backgroundColor: colors.primary[500],
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonDisabled: {
-    backgroundColor: colors.neutral[200],
-  },
   buttonText: {
     fontSize: 24,
-    color: colors.neutral[0],
-    fontWeight: typography.fontWeight.bold,
-  },
-  buttonTextDisabled: {
-    color: colors.neutral[400],
   },
   valueContainer: {
     alignItems: 'center',
     minWidth: 80,
   },
-  value: {
-    fontSize: typography.fontSize['4xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: colors.neutral[900],
-  },
-  label: {
-    fontSize: typography.fontSize.sm,
-    color: colors.neutral[600],
-    marginTop: spacing.xs,
-  },
+  value: {},
+  label: {},
 });

@@ -1,6 +1,6 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
-import { colors, typography, spacing, borderRadius } from '../design-system';
+import { TouchableOpacity, Text, View, StyleSheet } from 'react-native';
+import { useTheme } from '../design-system';
 
 interface CheckboxProps {
   /** Label affiché à côté de la checkbox */
@@ -17,6 +17,7 @@ interface CheckboxProps {
  * Checkbox - Case à cocher
  *
  * Utilisée pour les sélections multiples (jours disponibles, etc.)
+ * Supporte le Dark Mode.
  */
 export function Checkbox({
   label,
@@ -24,17 +25,45 @@ export function Checkbox({
   onToggle,
   disabled = false,
 }: CheckboxProps) {
+  const { colors, typography, spacing, borderRadius } = useTheme();
+
   return (
     <TouchableOpacity
-      style={[styles.container, disabled && styles.disabled]}
+      style={[
+        styles.container,
+        { paddingVertical: spacing.sm, gap: spacing.md },
+        disabled && styles.disabled,
+      ]}
       onPress={onToggle}
       disabled={disabled}
       activeOpacity={0.7}
     >
-      <View style={[styles.box, checked && styles.boxChecked]}>
-        {checked && <Text style={styles.checkmark}>✓</Text>}
+      <View
+        style={[
+          styles.box,
+          {
+            borderRadius: borderRadius.sm,
+            borderColor: checked ? colors.accent.default : colors.border.strong,
+            backgroundColor: checked ? colors.accent.default : colors.background.surface,
+          },
+        ]}
+      >
+        {checked && (
+          <Text style={[styles.checkmark, { color: colors.text.inverse }]}>
+            ✓
+          </Text>
+        )}
       </View>
-      <Text style={[styles.label, checked && styles.labelChecked]}>
+      <Text
+        style={[
+          styles.label,
+          {
+            fontSize: typography.fontSize.md,
+            color: checked ? colors.text.primary : colors.text.secondary,
+            fontWeight: checked ? typography.fontWeight.medium : typography.fontWeight.regular,
+          },
+        ]}
+      >
         {label}
       </Text>
     </TouchableOpacity>
@@ -45,8 +74,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: spacing.sm,
-    gap: spacing.md,
   },
   disabled: {
     opacity: 0.5,
@@ -54,28 +81,13 @@ const styles = StyleSheet.create({
   box: {
     width: 24,
     height: 24,
-    borderRadius: borderRadius.sm,
     borderWidth: 2,
-    borderColor: colors.neutral[400],
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.neutral[0],
-  },
-  boxChecked: {
-    backgroundColor: colors.primary[500],
-    borderColor: colors.primary[500],
   },
   checkmark: {
-    color: colors.neutral[0],
     fontSize: 14,
-    fontWeight: typography.fontWeight.bold,
+    fontWeight: '700',
   },
-  label: {
-    fontSize: typography.fontSize.md,
-    color: colors.neutral[700],
-  },
-  labelChecked: {
-    color: colors.neutral[900],
-    fontWeight: typography.fontWeight.medium,
-  },
+  label: {},
 });

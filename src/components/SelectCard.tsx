@@ -5,11 +5,11 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { colors, typography, spacing, borderRadius } from '../design-system';
+import { useTheme } from '../design-system';
 
-interface SelectCardProps {
-  /** Emoji ou icône affichée */
-  emoji: string;
+export interface SelectCardProps {
+  /** Emoji ou icône affichée (optionnel en attendant les vraies icônes) */
+  emoji?: string;
   /** Titre principal */
   title: string;
   /** Description optionnelle */
@@ -25,6 +25,8 @@ interface SelectCardProps {
  *
  * Utilisée pour les choix uniques (type de course, niveau, etc.)
  * Affiche un état sélectionné avec une bordure colorée.
+ *
+ * Supporte le Dark Mode.
  */
 export function SelectCard({
   emoji,
@@ -33,28 +35,72 @@ export function SelectCard({
   selected = false,
   onPress,
 }: SelectCardProps) {
+  const { colors, typography, spacing, borderRadius } = useTheme();
+
   return (
     <TouchableOpacity
       style={[
         styles.container,
-        selected && styles.selected,
+        {
+          padding: spacing.md,
+          borderRadius: borderRadius.lg,
+          gap: spacing.md,
+          backgroundColor: selected ? colors.accent.soft : colors.background.surface,
+          borderColor: selected ? colors.accent.default : colors.border.default,
+        },
       ]}
       onPress={onPress}
       activeOpacity={0.7}
     >
       {/* Indicateur de sélection */}
-      <View style={[styles.radio, selected && styles.radioSelected]}>
-        {selected && <View style={styles.radioInner} />}
+      <View
+        style={[
+          styles.radio,
+          {
+            borderColor: selected ? colors.accent.default : colors.border.strong,
+          },
+        ]}
+      >
+        {selected && (
+          <View
+            style={[
+              styles.radioInner,
+              { backgroundColor: colors.accent.default },
+            ]}
+          />
+        )}
       </View>
 
+      {/* Emoji (optionnel) */}
+      {emoji && <Text style={styles.emoji}>{emoji}</Text>}
+
       {/* Contenu */}
-      <Text style={styles.emoji}>{emoji}</Text>
       <View style={styles.textContainer}>
-        <Text style={[styles.title, selected && styles.titleSelected]}>
+        <Text
+          style={[
+            styles.title,
+            {
+              fontSize: typography.fontSize.lg,
+              fontWeight: typography.fontWeight.semibold,
+              color: selected ? colors.accent.default : colors.text.primary,
+            },
+          ]}
+        >
           {title}
         </Text>
         {description && (
-          <Text style={styles.description}>{description}</Text>
+          <Text
+            style={[
+              styles.description,
+              {
+                fontSize: typography.fontSize.sm,
+                color: colors.text.secondary,
+                marginTop: spacing.xs,
+              },
+            ]}
+          >
+            {description}
+          </Text>
         )}
       </View>
     </TouchableOpacity>
@@ -65,58 +111,27 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: spacing.md,
-    backgroundColor: colors.neutral[0],
-    borderRadius: borderRadius.lg,
     borderWidth: 2,
-    borderColor: colors.neutral[200],
-    gap: spacing.md,
   },
-  selected: {
-    borderColor: colors.primary[500],
-    backgroundColor: colors.primary[50],
-  },
-
-  // Radio button
   radio: {
     width: 24,
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: colors.neutral[400],
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  radioSelected: {
-    borderColor: colors.primary[500],
   },
   radioInner: {
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: colors.primary[500],
   },
-
-  // Emoji
   emoji: {
     fontSize: 32,
   },
-
-  // Text
   textContainer: {
     flex: 1,
   },
-  title: {
-    fontSize: typography.fontSize.lg,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.neutral[900],
-  },
-  titleSelected: {
-    color: colors.primary[700],
-  },
-  description: {
-    fontSize: typography.fontSize.sm,
-    color: colors.neutral[600],
-    marginTop: spacing.xs,
-  },
+  title: {},
+  description: {},
 });

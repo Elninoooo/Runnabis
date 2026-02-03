@@ -2,16 +2,14 @@ import React from 'react';
 import {
   TouchableOpacity,
   Text,
-  StyleSheet,
-  ViewStyle,
-  TextStyle,
   ActivityIndicator,
+  StyleSheet,
 } from 'react-native';
-import { colors, typography, spacing, borderRadius } from '../design-system';
+import { useTheme } from '../design-system';
 
 /**
  * Les différentes variantes du bouton
- * - primary: Action principale (vert)
+ * - primary: Action principale (teal)
  * - secondary: Action secondaire (outline)
  * - ghost: Bouton discret (juste le texte)
  */
@@ -48,14 +46,95 @@ export function Button({
   loading = false,
   fullWidth = false,
 }: ButtonProps) {
+  const { colors, typography, spacing, borderRadius } = useTheme();
   const isDisabled = disabled || loading;
+
+  // Styles dynamiques basés sur le thème
+  const getVariantStyles = () => {
+    switch (variant) {
+      case 'primary':
+        return {
+          container: {
+            backgroundColor: colors.accent.default,
+          },
+          label: {
+            color: colors.text.inverse,
+          },
+          loaderColor: colors.text.inverse,
+        };
+      case 'secondary':
+        return {
+          container: {
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            borderColor: colors.accent.default,
+          },
+          label: {
+            color: colors.accent.default,
+          },
+          loaderColor: colors.accent.default,
+        };
+      case 'ghost':
+        return {
+          container: {
+            backgroundColor: 'transparent',
+          },
+          label: {
+            color: colors.accent.default,
+          },
+          loaderColor: colors.accent.default,
+        };
+    }
+  };
+
+  const getSizeStyles = () => {
+    switch (size) {
+      case 'sm':
+        return {
+          container: {
+            paddingVertical: spacing.xs,
+            paddingHorizontal: spacing.md,
+            minHeight: 36,
+          },
+          label: {
+            fontSize: typography.fontSize.sm,
+          },
+        };
+      case 'md':
+        return {
+          container: {
+            paddingVertical: spacing.sm,
+            paddingHorizontal: spacing.lg,
+            minHeight: 48,
+          },
+          label: {
+            fontSize: typography.fontSize.md,
+          },
+        };
+      case 'lg':
+        return {
+          container: {
+            paddingVertical: spacing.md,
+            paddingHorizontal: spacing.xl,
+            minHeight: 56,
+          },
+          label: {
+            fontSize: typography.fontSize.lg,
+          },
+        };
+    }
+  };
+
+  const variantStyles = getVariantStyles();
+  const sizeStyles = getSizeStyles();
 
   return (
     <TouchableOpacity
       style={[
         styles.base,
-        styles[variant],
-        styles[`size_${size}`],
+        { borderRadius: borderRadius.lg },
+        variantStyles.container,
+        sizeStyles.container,
         fullWidth && styles.fullWidth,
         isDisabled && styles.disabled,
       ]}
@@ -65,15 +144,16 @@ export function Button({
     >
       {loading ? (
         <ActivityIndicator
-          color={variant === 'primary' ? colors.neutral[0] : colors.primary[500]}
+          color={variantStyles.loaderColor}
           size="small"
         />
       ) : (
         <Text
           style={[
             styles.label,
-            styles[`label_${variant}`],
-            styles[`label_${size}`],
+            { fontWeight: typography.fontWeight.semibold },
+            variantStyles.label,
+            sizeStyles.label,
           ]}
         >
           {label}
@@ -84,71 +164,15 @@ export function Button({
 }
 
 const styles = StyleSheet.create({
-  // Style de base commun à tous les boutons
   base: {
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: borderRadius.lg,
   },
-
-  // Variantes
-  primary: {
-    backgroundColor: colors.primary[500],
-  },
-  secondary: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: colors.primary[500],
-  },
-  ghost: {
-    backgroundColor: 'transparent',
-  },
-
-  // Tailles
-  size_sm: {
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.md,
-    minHeight: 36,
-  },
-  size_md: {
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.lg,
-    minHeight: 48,
-  },
-  size_lg: {
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.xl,
-    minHeight: 56,
-  },
-
-  // États
   disabled: {
     opacity: 0.5,
   },
   fullWidth: {
     width: '100%',
   },
-
-  // Labels
-  label: {
-    fontWeight: typography.fontWeight.semibold,
-  },
-  label_primary: {
-    color: colors.neutral[0],
-  },
-  label_secondary: {
-    color: colors.primary[500],
-  },
-  label_ghost: {
-    color: colors.primary[500],
-  },
-  label_sm: {
-    fontSize: typography.fontSize.sm,
-  },
-  label_md: {
-    fontSize: typography.fontSize.md,
-  },
-  label_lg: {
-    fontSize: typography.fontSize.lg,
-  },
+  label: {},
 });

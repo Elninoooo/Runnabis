@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
-import { colors, spacing, borderRadius, shadows } from '../design-system';
+import { View, ViewStyle } from 'react-native';
+import { useTheme } from '../design-system';
 
 interface CardProps {
   /** Contenu de la carte */
@@ -13,18 +13,60 @@ interface CardProps {
   padding?: 'none' | 'sm' | 'md' | 'lg';
 }
 
+/**
+ * Card - Conteneur avec fond et bordure
+ *
+ * Supporte le Dark Mode.
+ */
 export function Card({
   children,
   style,
   variant = 'elevated',
   padding = 'md',
 }: CardProps) {
+  const { colors, spacing, borderRadius, shadows } = useTheme();
+
+  const getVariantStyles = (): ViewStyle => {
+    switch (variant) {
+      case 'elevated':
+        return {
+          backgroundColor: colors.background.surface,
+          ...shadows.md,
+        };
+      case 'outlined':
+        return {
+          backgroundColor: colors.background.surface,
+          borderWidth: 1,
+          borderColor: colors.border.default,
+        };
+      case 'filled':
+        return {
+          backgroundColor: colors.background.muted,
+        };
+    }
+  };
+
+  const getPaddingValue = (): number => {
+    switch (padding) {
+      case 'none':
+        return 0;
+      case 'sm':
+        return spacing.sm;
+      case 'md':
+        return spacing.md;
+      case 'lg':
+        return spacing.lg;
+    }
+  };
+
   return (
     <View
       style={[
-        styles.base,
-        styles[variant],
-        styles[`padding_${padding}`],
+        {
+          borderRadius: borderRadius.lg,
+          padding: getPaddingValue(),
+        },
+        getVariantStyles(),
         style,
       ]}
     >
@@ -32,36 +74,3 @@ export function Card({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  base: {
-    borderRadius: borderRadius.lg,
-    backgroundColor: colors.neutral[0],
-  },
-
-  // Variantes
-  elevated: {
-    ...shadows.md,
-  },
-  outlined: {
-    borderWidth: 1,
-    borderColor: colors.neutral[200],
-  },
-  filled: {
-    backgroundColor: colors.neutral[50],
-  },
-
-  // Padding
-  padding_none: {
-    padding: 0,
-  },
-  padding_sm: {
-    padding: spacing.sm,
-  },
-  padding_md: {
-    padding: spacing.md,
-  },
-  padding_lg: {
-    padding: spacing.lg,
-  },
-});
