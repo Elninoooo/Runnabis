@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import { Button, SelectCard } from '../components';
-import { colors, typography, spacing } from '../design-system';
+import { useTheme } from '../design-system';
 import { RunnerLevel } from '../types';
 
 // Configuration des niveaux disponibles
@@ -42,6 +42,7 @@ export function OnboardingLevelSelection({
   onContinue,
   onBack,
 }: OnboardingLevelSelectionProps) {
+  const { colors, typography, spacing } = useTheme();
   const [selectedLevel, setSelectedLevel] = useState<RunnerLevel | null>(null);
 
   const handleContinue = () => {
@@ -51,12 +52,38 @@ export function OnboardingLevelSelection({
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background.primary }]}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.step}>Étape 2/4</Text>
-        <Text style={styles.title}>Quel est ton niveau ?</Text>
-        <Text style={styles.subtitle}>
+      <View style={[styles.header, { paddingHorizontal: spacing.lg, paddingTop: spacing.xl, paddingBottom: spacing.md }]}>
+        <Text style={[
+          styles.step,
+          {
+            fontSize: typography.fontSize.sm,
+            color: colors.accent.default,
+            fontWeight: typography.fontWeight.medium,
+            marginBottom: spacing.xs,
+          }
+        ]}>
+          Étape 2/4
+        </Text>
+        <Text style={[
+          styles.title,
+          {
+            fontSize: typography.fontSize['3xl'],
+            fontWeight: typography.fontWeight.bold,
+            color: colors.text.primary,
+            marginBottom: spacing.xs,
+          }
+        ]}>
+          Quel est ton niveau ?
+        </Text>
+        <Text style={[
+          styles.subtitle,
+          {
+            fontSize: typography.fontSize.md,
+            color: colors.text.secondary,
+          }
+        ]}>
           On adaptera le plan à ton expérience
         </Text>
       </View>
@@ -64,7 +91,7 @@ export function OnboardingLevelSelection({
       {/* Options */}
       <ScrollView
         style={styles.content}
-        contentContainerStyle={styles.options}
+        contentContainerStyle={[styles.options, { padding: spacing.lg, gap: spacing.md }]}
         showsVerticalScrollIndicator={false}
       >
         {LEVEL_OPTIONS.map((option) => (
@@ -80,7 +107,7 @@ export function OnboardingLevelSelection({
       </ScrollView>
 
       {/* Footer */}
-      <View style={styles.footer}>
+      <View style={[styles.footer, { paddingHorizontal: spacing.lg, paddingBottom: spacing.xl, paddingTop: spacing.md, gap: spacing.md }]}>
         {onBack && (
           <Button
             label="Retour"
@@ -106,43 +133,18 @@ export function OnboardingLevelSelection({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral[0],
   },
-  header: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.md,
-  },
-  step: {
-    fontSize: typography.fontSize.sm,
-    color: colors.primary[500],
-    fontWeight: typography.fontWeight.medium,
-    marginBottom: spacing.xs,
-  },
-  title: {
-    fontSize: typography.fontSize['3xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: colors.neutral[900],
-    marginBottom: spacing.xs,
-  },
-  subtitle: {
-    fontSize: typography.fontSize.md,
-    color: colors.neutral[600],
-  },
+  header: {},
+  step: {},
+  title: {},
+  subtitle: {},
   content: {
     flex: 1,
   },
-  options: {
-    padding: spacing.lg,
-    gap: spacing.md,
-  },
+  options: {},
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xl,
-    paddingTop: spacing.md,
-    gap: spacing.md,
   },
   continueButton: {
     flex: 1,

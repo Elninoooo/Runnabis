@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import { Button, SelectCard } from '../components';
-import { colors, typography, spacing } from '../design-system';
+import { useTheme } from '../design-system';
 import { RaceType } from '../types';
 
 // Configuration des courses disponibles
@@ -48,6 +48,7 @@ export function OnboardingRaceSelection({
   onContinue,
   onBack,
 }: OnboardingRaceSelectionProps) {
+  const { colors, typography, spacing } = useTheme();
   const [selectedRace, setSelectedRace] = useState<RaceType | null>(null);
 
   const handleContinue = () => {
@@ -57,12 +58,38 @@ export function OnboardingRaceSelection({
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background.primary }]}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.step}>Étape 1/4</Text>
-        <Text style={styles.title}>Quel est ton objectif ?</Text>
-        <Text style={styles.subtitle}>
+      <View style={[styles.header, { paddingHorizontal: spacing.lg, paddingTop: spacing.xl, paddingBottom: spacing.md }]}>
+        <Text style={[
+          styles.step,
+          {
+            fontSize: typography.fontSize.sm,
+            color: colors.accent.default,
+            fontWeight: typography.fontWeight.medium,
+            marginBottom: spacing.xs,
+          }
+        ]}>
+          Étape 1/4
+        </Text>
+        <Text style={[
+          styles.title,
+          {
+            fontSize: typography.fontSize['3xl'],
+            fontWeight: typography.fontWeight.bold,
+            color: colors.text.primary,
+            marginBottom: spacing.xs,
+          }
+        ]}>
+          Quel est ton objectif ?
+        </Text>
+        <Text style={[
+          styles.subtitle,
+          {
+            fontSize: typography.fontSize.md,
+            color: colors.text.secondary,
+          }
+        ]}>
           Choisis la distance que tu veux préparer
         </Text>
       </View>
@@ -70,7 +97,7 @@ export function OnboardingRaceSelection({
       {/* Options */}
       <ScrollView
         style={styles.content}
-        contentContainerStyle={styles.options}
+        contentContainerStyle={[styles.options, { padding: spacing.lg, gap: spacing.md }]}
         showsVerticalScrollIndicator={false}
       >
         {RACE_OPTIONS.map((race) => (
@@ -86,7 +113,7 @@ export function OnboardingRaceSelection({
       </ScrollView>
 
       {/* Footer */}
-      <View style={styles.footer}>
+      <View style={[styles.footer, { paddingHorizontal: spacing.lg, paddingBottom: spacing.xl, paddingTop: spacing.md }]}>
         <Button
           label="Continuer"
           onPress={handleContinue}
@@ -102,39 +129,14 @@ export function OnboardingRaceSelection({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral[0],
   },
-  header: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.md,
-  },
-  step: {
-    fontSize: typography.fontSize.sm,
-    color: colors.primary[500],
-    fontWeight: typography.fontWeight.medium,
-    marginBottom: spacing.xs,
-  },
-  title: {
-    fontSize: typography.fontSize['3xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: colors.neutral[900],
-    marginBottom: spacing.xs,
-  },
-  subtitle: {
-    fontSize: typography.fontSize.md,
-    color: colors.neutral[600],
-  },
+  header: {},
+  step: {},
+  title: {},
+  subtitle: {},
   content: {
     flex: 1,
   },
-  options: {
-    padding: spacing.lg,
-    gap: spacing.md,
-  },
-  footer: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xl,
-    paddingTop: spacing.md,
-  },
+  options: {},
+  footer: {},
 });

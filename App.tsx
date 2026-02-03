@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   OnboardingWelcome,
@@ -8,7 +8,9 @@ import {
   OnboardingDuration,
   HomeScreen,
   WorkoutDetailScreen,
+  SettingsScreen,
 } from './src/screens';
+import { ThemeProvider, useTheme } from './src/design-system';
 import { RaceType, RunnerLevel, DayOfWeek, UserProfile, TrainingPlan, Workout } from './src/types';
 import { generateTrainingPlan } from './src/utils';
 
@@ -20,9 +22,12 @@ type Screen =
   | 'frequency'
   | 'duration'
   | 'home'
-  | 'workout-detail';
+  | 'workout-detail'
+  | 'settings';
 
-export default function App() {
+function AppContent() {
+  const { mode } = useTheme();
+
   // Navigation
   const [currentScreen, setCurrentScreen] = useState<Screen>('welcome');
 
@@ -103,6 +108,22 @@ export default function App() {
     }
   };
 
+  // Handlers - Settings
+  const handleSettingsPress = () => {
+    setCurrentScreen('settings');
+  };
+
+  const handleBackFromSettings = () => {
+    setCurrentScreen('home');
+  };
+
+  const handleResetOnboarding = () => {
+    setUserProfile({});
+    setTrainingPlan(null);
+    setSelectedWorkout(null);
+    setCurrentScreen('welcome');
+  };
+
   // Handlers - Workout Detail
   const handleBackToHome = () => {
     setSelectedWorkout(null);
@@ -117,7 +138,7 @@ export default function App() {
 
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
 
       {/* Onboarding */}
       {currentScreen === 'welcome' && (
@@ -155,6 +176,7 @@ export default function App() {
           plan={trainingPlan}
           onWorkoutPress={handleWorkoutPress}
           onToggleComplete={handleToggleComplete}
+          onSettingsPress={handleSettingsPress}
         />
       )}
 
@@ -165,6 +187,22 @@ export default function App() {
           onToggleComplete={handleToggleSelectedComplete}
         />
       )}
+
+      {currentScreen === 'settings' && trainingPlan && (
+        <SettingsScreen
+          profile={trainingPlan.userProfile}
+          onBack={handleBackFromSettings}
+          onResetOnboarding={handleResetOnboarding}
+        />
+      )}
     </>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }

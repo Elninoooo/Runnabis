@@ -1,27 +1,46 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { Button } from '../components';
-import { colors, typography, spacing } from '../design-system';
+import { useTheme } from '../design-system';
 
 interface OnboardingWelcomeProps {
   onGetStarted: () => void;
 }
 
 export function OnboardingWelcome({ onGetStarted }: OnboardingWelcomeProps) {
+  const { colors, typography, spacing } = useTheme();
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background.primary }]}>
+      <View style={[styles.content, { paddingHorizontal: spacing.lg }]}>
         {/* Header */}
-        <View style={styles.header}>
+        <View style={[styles.header, { paddingTop: spacing['2xl'], paddingBottom: spacing.xl }]}>
           <Text style={styles.emoji}>🏃</Text>
-          <Text style={styles.title}>Runnabis</Text>
-          <Text style={styles.subtitle}>
+          <Text style={[
+            styles.title,
+            {
+              fontSize: typography.fontSize['4xl'],
+              fontWeight: typography.fontWeight.bold,
+              color: colors.accent.default,
+              marginBottom: spacing.sm,
+            }
+          ]}>
+            Runnabis
+          </Text>
+          <Text style={[
+            styles.subtitle,
+            {
+              fontSize: typography.fontSize.lg,
+              color: colors.text.secondary,
+              lineHeight: typography.fontSize.lg * typography.lineHeight.relaxed,
+            }
+          ]}>
             Ton coach personnel pour préparer ton semi-marathon
           </Text>
         </View>
 
         {/* Features */}
-        <View style={styles.features}>
+        <View style={[styles.features, { marginTop: spacing.xl, gap: spacing.lg }]}>
           <FeatureItem
             emoji="📅"
             title="Plan personnalisé"
@@ -41,7 +60,7 @@ export function OnboardingWelcome({ onGetStarted }: OnboardingWelcomeProps) {
       </View>
 
       {/* CTA */}
-      <View style={styles.footer}>
+      <View style={[styles.footer, { paddingHorizontal: spacing.lg, paddingBottom: spacing.xl }]}>
         <Button
           label="Commencer"
           onPress={onGetStarted}
@@ -63,12 +82,33 @@ function FeatureItem({
   title: string;
   description: string;
 }) {
+  const { colors, typography, spacing } = useTheme();
+
   return (
-    <View style={styles.featureItem}>
+    <View style={[styles.featureItem, { gap: spacing.md }]}>
       <Text style={styles.featureEmoji}>{emoji}</Text>
       <View style={styles.featureText}>
-        <Text style={styles.featureTitle}>{title}</Text>
-        <Text style={styles.featureDescription}>{description}</Text>
+        <Text style={[
+          styles.featureTitle,
+          {
+            fontSize: typography.fontSize.lg,
+            fontWeight: typography.fontWeight.semibold,
+            color: colors.text.primary,
+            marginBottom: spacing.xs,
+          }
+        ]}>
+          {title}
+        </Text>
+        <Text style={[
+          styles.featureDescription,
+          {
+            fontSize: typography.fontSize.md,
+            color: colors.text.secondary,
+            lineHeight: typography.fontSize.md * typography.lineHeight.normal,
+          }
+        ]}>
+          {description}
+        </Text>
       </View>
     </View>
   );
@@ -77,41 +117,25 @@ function FeatureItem({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral[0],
   },
   content: {
     flex: 1,
-    paddingHorizontal: spacing.lg,
   },
   header: {
     alignItems: 'center',
-    paddingTop: spacing['2xl'],
-    paddingBottom: spacing.xl,
   },
   emoji: {
     fontSize: 64,
-    marginBottom: spacing.md,
+    marginBottom: 16,
   },
-  title: {
-    fontSize: typography.fontSize['4xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: colors.primary[500],
-    marginBottom: spacing.sm,
-  },
+  title: {},
   subtitle: {
-    fontSize: typography.fontSize.lg,
-    color: colors.neutral[600],
     textAlign: 'center',
-    lineHeight: typography.fontSize.lg * typography.lineHeight.relaxed,
   },
-  features: {
-    marginTop: spacing.xl,
-    gap: spacing.lg,
-  },
+  features: {},
   featureItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: spacing.md,
   },
   featureEmoji: {
     fontSize: 32,
@@ -119,19 +143,7 @@ const styles = StyleSheet.create({
   featureText: {
     flex: 1,
   },
-  featureTitle: {
-    fontSize: typography.fontSize.lg,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.neutral[900],
-    marginBottom: spacing.xs,
-  },
-  featureDescription: {
-    fontSize: typography.fontSize.md,
-    color: colors.neutral[600],
-    lineHeight: typography.fontSize.md * typography.lineHeight.normal,
-  },
-  footer: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xl,
-  },
+  featureTitle: {},
+  featureDescription: {},
+  footer: {},
 });

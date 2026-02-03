@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { Button } from '../components';
-import { colors, typography, spacing, borderRadius } from '../design-system';
+import { useTheme } from '../design-system';
 import { Workout } from '../types';
 import { WORKOUT_INFO } from '../utils';
 
@@ -28,6 +28,7 @@ export function WorkoutDetailScreen({
   onBack,
   onToggleComplete,
 }: WorkoutDetailScreenProps) {
+  const { colors, typography, spacing, borderRadius } = useTheme();
   const info = WORKOUT_INFO[workout.type];
 
   // Formater la date
@@ -45,33 +46,45 @@ export function WorkoutDetailScreen({
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background.primary }]}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingHorizontal: spacing.md, paddingTop: spacing.sm }]}>
         <Button label="← Retour" onPress={onBack} variant="ghost" size="sm" />
       </View>
 
       <ScrollView
         style={styles.content}
-        contentContainerStyle={styles.contentContainer}
+        contentContainerStyle={[styles.contentContainer, { paddingBottom: spacing.xl }]}
         showsVerticalScrollIndicator={false}
       >
         {/* Hero */}
-        <View style={[styles.hero, { backgroundColor: info.color + '20' }]}>
+        <View style={[styles.hero, { backgroundColor: info.color + '20', paddingVertical: spacing['2xl'], paddingHorizontal: spacing.lg }]}>
           <Text style={styles.emoji}>{info.emoji}</Text>
-          <Text style={styles.title}>{info.title}</Text>
-          <Text style={styles.date}>{formatDate(workout.date)}</Text>
+          <Text style={[styles.title, { fontSize: typography.fontSize['2xl'], fontWeight: typography.fontWeight.bold, color: colors.text.primary, marginBottom: spacing.xs }]}>
+            {info.title}
+          </Text>
+          <Text style={[styles.date, { fontSize: typography.fontSize.md, color: colors.text.secondary, marginBottom: spacing.lg }]}>
+            {formatDate(workout.date)}
+          </Text>
 
           {/* Stats */}
-          <View style={styles.stats}>
+          <View style={[styles.stats, { gap: spacing.xl }]}>
             <View style={styles.stat}>
-              <Text style={styles.statValue}>{workout.duration}</Text>
-              <Text style={styles.statLabel}>minutes</Text>
+              <Text style={[styles.statValue, { fontSize: typography.fontSize['3xl'], fontWeight: typography.fontWeight.bold, color: colors.text.primary }]}>
+                {workout.duration}
+              </Text>
+              <Text style={[styles.statLabel, { fontSize: typography.fontSize.sm, color: colors.text.secondary }]}>
+                minutes
+              </Text>
             </View>
             {workout.distance && (
               <View style={styles.stat}>
-                <Text style={styles.statValue}>{workout.distance}</Text>
-                <Text style={styles.statLabel}>km</Text>
+                <Text style={[styles.statValue, { fontSize: typography.fontSize['3xl'], fontWeight: typography.fontWeight.bold, color: colors.text.primary }]}>
+                  {workout.distance}
+                </Text>
+                <Text style={[styles.statLabel, { fontSize: typography.fontSize.sm, color: colors.text.secondary }]}>
+                  km
+                </Text>
               </View>
             )}
           </View>
@@ -79,57 +92,65 @@ export function WorkoutDetailScreen({
 
         {/* Status */}
         {workout.completed && (
-          <View style={styles.completedBanner}>
-            <Text style={styles.completedText}>✓ Séance terminée</Text>
+          <View style={[styles.completedBanner, { backgroundColor: colors.accent.soft, paddingVertical: spacing.sm }]}>
+            <Text style={[styles.completedText, { fontSize: typography.fontSize.md, fontWeight: typography.fontWeight.medium, color: colors.accent.default }]}>
+              ✓ Séance terminée
+            </Text>
           </View>
         )}
 
         {/* Description */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Pourquoi cette séance ?</Text>
-          <Text style={styles.description}>{info.description}</Text>
+        <View style={[styles.section, { paddingHorizontal: spacing.lg, paddingTop: spacing.lg }]}>
+          <Text style={[styles.sectionTitle, { fontSize: typography.fontSize.lg, fontWeight: typography.fontWeight.semibold, color: colors.text.primary, marginBottom: spacing.sm }]}>
+            Pourquoi cette séance ?
+          </Text>
+          <Text style={[styles.description, { fontSize: typography.fontSize.md, color: colors.text.secondary, lineHeight: typography.fontSize.md * typography.lineHeight.relaxed }]}>
+            {info.description}
+          </Text>
         </View>
 
         {/* Conseils selon le type */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Conseils</Text>
+        <View style={[styles.section, { paddingHorizontal: spacing.lg, paddingTop: spacing.lg }]}>
+          <Text style={[styles.sectionTitle, { fontSize: typography.fontSize.lg, fontWeight: typography.fontWeight.semibold, color: colors.text.primary, marginBottom: spacing.sm }]}>
+            Conseils
+          </Text>
           {workout.type === 'endurance-fondamentale' && (
-            <View style={styles.tips}>
+            <View style={[styles.tips, { gap: spacing.sm }]}>
               <TipItem emoji="💬" text="Tu dois pouvoir tenir une conversation" />
               <TipItem emoji="❤️" text="Reste en zone 2 (60-70% FCM)" />
               <TipItem emoji="🎯" text="L'objectif est la durée, pas la vitesse" />
             </View>
           )}
           {workout.type === 'fractionne' && (
-            <View style={styles.tips}>
+            <View style={[styles.tips, { gap: spacing.sm }]}>
               <TipItem emoji="🔥" text="Échauffe-toi bien pendant 10-15 min" />
               <TipItem emoji="⚡" text="Les phases rapides : tu ne peux pas parler" />
               <TipItem emoji="🧘" text="Récupération active entre les intervalles" />
             </View>
           )}
           {workout.type === 'sortie-longue' && (
-            <View style={styles.tips}>
+            <View style={[styles.tips, { gap: spacing.sm }]}>
               <TipItem emoji="💧" text="Hydrate-toi avant et pendant" />
               <TipItem emoji="🍌" text="Prévois une collation si > 1h30" />
               <TipItem emoji="🐢" text="Pars doucement, tu accéléreras à la fin" />
             </View>
           )}
           {workout.type === 'allure-specifique' && (
-            <View style={styles.tips}>
+            <View style={[styles.tips, { gap: spacing.sm }]}>
               <TipItem emoji="⏱️" text="Utilise un GPS pour contrôler ton allure" />
               <TipItem emoji="🎯" text="C'est l'allure de ta course objectif" />
               <TipItem emoji="🧠" text="Mémorise les sensations à cette vitesse" />
             </View>
           )}
           {workout.type === 'recuperation' && (
-            <View style={styles.tips}>
+            <View style={[styles.tips, { gap: spacing.sm }]}>
               <TipItem emoji="🐌" text="Vraiment très lent, c'est le but !" />
               <TipItem emoji="😊" text="Profite du paysage, détends-toi" />
               <TipItem emoji="💪" text="Ça aide tes muscles à récupérer" />
             </View>
           )}
           {workout.type === 'repos' && (
-            <View style={styles.tips}>
+            <View style={[styles.tips, { gap: spacing.sm }]}>
               <TipItem emoji="😴" text="Le repos fait partie de l'entraînement" />
               <TipItem emoji="🧘" text="Étirements ou yoga si tu veux bouger" />
               <TipItem emoji="🍽️" text="Mange bien et dors suffisamment" />
@@ -139,7 +160,7 @@ export function WorkoutDetailScreen({
       </ScrollView>
 
       {/* Footer */}
-      <View style={styles.footer}>
+      <View style={[styles.footer, { paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderTopWidth: 1, borderTopColor: colors.border.default }]}>
         <Button
           label={workout.completed ? 'Marquer comme à faire' : 'Marquer comme terminée'}
           onPress={onToggleComplete}
@@ -154,10 +175,14 @@ export function WorkoutDetailScreen({
 
 // Composant pour un conseil
 function TipItem({ emoji, text }: { emoji: string; text: string }) {
+  const { colors, typography, spacing } = useTheme();
+
   return (
-    <View style={styles.tipItem}>
+    <View style={[styles.tipItem, { gap: spacing.sm }]}>
       <Text style={styles.tipEmoji}>{emoji}</Text>
-      <Text style={styles.tipText}>{text}</Text>
+      <Text style={[styles.tipText, { fontSize: typography.fontSize.md, color: colors.text.secondary, lineHeight: typography.fontSize.md * typography.lineHeight.normal }]}>
+        {text}
+      </Text>
     </View>
   );
 }
@@ -165,110 +190,56 @@ function TipItem({ emoji, text }: { emoji: string; text: string }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral[0],
   },
-  header: {
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing.sm,
-  },
+  header: {},
   content: {
     flex: 1,
   },
-  contentContainer: {
-    paddingBottom: spacing.xl,
-  },
+  contentContainer: {},
 
   // Hero
   hero: {
     alignItems: 'center',
-    paddingVertical: spacing['2xl'],
-    paddingHorizontal: spacing.lg,
   },
   emoji: {
     fontSize: 64,
-    marginBottom: spacing.md,
+    marginBottom: 16,
   },
-  title: {
-    fontSize: typography.fontSize['2xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: colors.neutral[900],
-    marginBottom: spacing.xs,
-  },
-  date: {
-    fontSize: typography.fontSize.md,
-    color: colors.neutral[600],
-    marginBottom: spacing.lg,
-  },
+  title: {},
+  date: {},
   stats: {
     flexDirection: 'row',
-    gap: spacing.xl,
   },
   stat: {
     alignItems: 'center',
   },
-  statValue: {
-    fontSize: typography.fontSize['3xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: colors.neutral[900],
-  },
-  statLabel: {
-    fontSize: typography.fontSize.sm,
-    color: colors.neutral[600],
-  },
+  statValue: {},
+  statLabel: {},
 
   // Completed banner
   completedBanner: {
-    backgroundColor: colors.primary[100],
-    paddingVertical: spacing.sm,
     alignItems: 'center',
   },
-  completedText: {
-    fontSize: typography.fontSize.md,
-    fontWeight: typography.fontWeight.medium,
-    color: colors.primary[700],
-  },
+  completedText: {},
 
   // Section
-  section: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.lg,
-  },
-  sectionTitle: {
-    fontSize: typography.fontSize.lg,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.neutral[900],
-    marginBottom: spacing.sm,
-  },
-  description: {
-    fontSize: typography.fontSize.md,
-    color: colors.neutral[700],
-    lineHeight: typography.fontSize.md * typography.lineHeight.relaxed,
-  },
+  section: {},
+  sectionTitle: {},
+  description: {},
 
   // Tips
-  tips: {
-    gap: spacing.sm,
-  },
+  tips: {},
   tipItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: spacing.sm,
   },
   tipEmoji: {
     fontSize: 20,
   },
   tipText: {
     flex: 1,
-    fontSize: typography.fontSize.md,
-    color: colors.neutral[700],
-    lineHeight: typography.fontSize.md * typography.lineHeight.normal,
   },
 
   // Footer
-  footer: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    borderTopWidth: 1,
-    borderTopColor: colors.neutral[200],
-  },
+  footer: {},
 });

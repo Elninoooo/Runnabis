@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { Button, SelectCard } from '../components';
-import { colors, typography, spacing } from '../design-system';
+import { useTheme } from '../design-system';
 
 // Options de durée du plan
 const DURATION_OPTIONS: {
@@ -47,6 +47,7 @@ export function OnboardingDuration({
   onComplete,
   onBack,
 }: OnboardingDurationProps) {
+  const { colors, typography, spacing } = useTheme();
   const [selectedWeeks, setSelectedWeeks] = useState<number | null>(12); // 12 semaines par défaut
 
   const handleComplete = () => {
@@ -56,18 +57,44 @@ export function OnboardingDuration({
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background.primary }]}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.step}>Étape 4/4</Text>
-        <Text style={styles.title}>Durée du plan</Text>
-        <Text style={styles.subtitle}>
+      <View style={[styles.header, { paddingHorizontal: spacing.lg, paddingTop: spacing.xl, paddingBottom: spacing.md }]}>
+        <Text style={[
+          styles.step,
+          {
+            fontSize: typography.fontSize.sm,
+            color: colors.accent.default,
+            fontWeight: typography.fontWeight.medium,
+            marginBottom: spacing.xs,
+          }
+        ]}>
+          Étape 4/4
+        </Text>
+        <Text style={[
+          styles.title,
+          {
+            fontSize: typography.fontSize['3xl'],
+            fontWeight: typography.fontWeight.bold,
+            color: colors.text.primary,
+            marginBottom: spacing.xs,
+          }
+        ]}>
+          Durée du plan
+        </Text>
+        <Text style={[
+          styles.subtitle,
+          {
+            fontSize: typography.fontSize.md,
+            color: colors.text.secondary,
+          }
+        ]}>
           Sur combien de semaines veux-tu t'entraîner ?
         </Text>
       </View>
 
       {/* Options */}
-      <View style={styles.content}>
+      <View style={[styles.content, { padding: spacing.lg, gap: spacing.md }]}>
         {DURATION_OPTIONS.map((option) => (
           <SelectCard
             key={option.weeks}
@@ -81,7 +108,7 @@ export function OnboardingDuration({
       </View>
 
       {/* Footer */}
-      <View style={styles.footer}>
+      <View style={[styles.footer, { paddingHorizontal: spacing.lg, paddingBottom: spacing.xl, paddingTop: spacing.md, gap: spacing.md }]}>
         {onBack && (
           <Button
             label="Retour"
@@ -107,41 +134,17 @@ export function OnboardingDuration({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral[0],
   },
-  header: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.md,
-  },
-  step: {
-    fontSize: typography.fontSize.sm,
-    color: colors.primary[500],
-    fontWeight: typography.fontWeight.medium,
-    marginBottom: spacing.xs,
-  },
-  title: {
-    fontSize: typography.fontSize['3xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: colors.neutral[900],
-    marginBottom: spacing.xs,
-  },
-  subtitle: {
-    fontSize: typography.fontSize.md,
-    color: colors.neutral[600],
-  },
+  header: {},
+  step: {},
+  title: {},
+  subtitle: {},
   content: {
     flex: 1,
-    padding: spacing.lg,
-    gap: spacing.md,
   },
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xl,
-    paddingTop: spacing.md,
-    gap: spacing.md,
   },
   continueButton: {
     flex: 1,

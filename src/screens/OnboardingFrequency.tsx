@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import { Button, Checkbox, Stepper } from '../components';
-import { colors, typography, spacing } from '../design-system';
+import { useTheme } from '../design-system';
 import { DayOfWeek } from '../types';
 
 // Jours de la semaine
@@ -26,6 +26,7 @@ export function OnboardingFrequency({
   onContinue,
   onBack,
 }: OnboardingFrequencyProps) {
+  const { colors, typography, spacing } = useTheme();
   const [frequency, setFrequency] = useState(3);
   const [selectedDays, setSelectedDays] = useState<DayOfWeek[]>([]);
 
@@ -57,23 +58,49 @@ export function OnboardingFrequency({
   const isValid = selectedDays.length === frequency;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background.primary }]}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.step}>Étape 3/4</Text>
-        <Text style={styles.title}>Ta disponibilité</Text>
-        <Text style={styles.subtitle}>
+      <View style={[styles.header, { paddingHorizontal: spacing.lg, paddingTop: spacing.xl, paddingBottom: spacing.md }]}>
+        <Text style={[
+          styles.step,
+          {
+            fontSize: typography.fontSize.sm,
+            color: colors.accent.default,
+            fontWeight: typography.fontWeight.medium,
+            marginBottom: spacing.xs,
+          }
+        ]}>
+          Étape 3/4
+        </Text>
+        <Text style={[
+          styles.title,
+          {
+            fontSize: typography.fontSize['3xl'],
+            fontWeight: typography.fontWeight.bold,
+            color: colors.text.primary,
+            marginBottom: spacing.xs,
+          }
+        ]}>
+          Ta disponibilité
+        </Text>
+        <Text style={[
+          styles.subtitle,
+          {
+            fontSize: typography.fontSize.md,
+            color: colors.text.secondary,
+          }
+        ]}>
           Combien de fois par semaine peux-tu courir ?
         </Text>
       </View>
 
       <ScrollView
         style={styles.content}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { padding: spacing.lg }]}
         showsVerticalScrollIndicator={false}
       >
         {/* Stepper pour la fréquence */}
-        <View style={styles.frequencySection}>
+        <View style={[styles.frequencySection, { paddingVertical: spacing.xl }]}>
           <Stepper
             value={frequency}
             min={2}
@@ -84,16 +111,31 @@ export function OnboardingFrequency({
         </View>
 
         {/* Sélection des jours */}
-        <View style={styles.daysSection}>
-          <Text style={styles.daysTitle}>
+        <View style={[styles.daysSection, { marginTop: spacing.lg }]}>
+          <Text style={[
+            styles.daysTitle,
+            {
+              fontSize: typography.fontSize.lg,
+              fontWeight: typography.fontWeight.semibold,
+              color: colors.text.primary,
+              marginBottom: spacing.xs,
+            }
+          ]}>
             Quels jours es-tu disponible ?
           </Text>
-          <Text style={styles.daysSubtitle}>
+          <Text style={[
+            styles.daysSubtitle,
+            {
+              fontSize: typography.fontSize.sm,
+              color: colors.text.secondary,
+              marginBottom: spacing.md,
+            }
+          ]}>
             Sélectionne {frequency} jour{frequency > 1 ? 's' : ''}
             {selectedDays.length > 0 && ` (${selectedDays.length}/${frequency})`}
           </Text>
 
-          <View style={styles.daysList}>
+          <View style={[styles.daysList, { gap: spacing.xs }]}>
             {DAYS.map((day) => (
               <Checkbox
                 key={day.key}
@@ -111,7 +153,7 @@ export function OnboardingFrequency({
       </ScrollView>
 
       {/* Footer */}
-      <View style={styles.footer}>
+      <View style={[styles.footer, { paddingHorizontal: spacing.lg, paddingBottom: spacing.xl, paddingTop: spacing.md, gap: spacing.md }]}>
         {onBack && (
           <Button
             label="Retour"
@@ -137,63 +179,25 @@ export function OnboardingFrequency({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral[0],
   },
-  header: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.md,
-  },
-  step: {
-    fontSize: typography.fontSize.sm,
-    color: colors.primary[500],
-    fontWeight: typography.fontWeight.medium,
-    marginBottom: spacing.xs,
-  },
-  title: {
-    fontSize: typography.fontSize['3xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: colors.neutral[900],
-    marginBottom: spacing.xs,
-  },
-  subtitle: {
-    fontSize: typography.fontSize.md,
-    color: colors.neutral[600],
-  },
+  header: {},
+  step: {},
+  title: {},
+  subtitle: {},
   content: {
     flex: 1,
   },
-  scrollContent: {
-    padding: spacing.lg,
-  },
+  scrollContent: {},
   frequencySection: {
-    paddingVertical: spacing.xl,
     alignItems: 'center',
   },
-  daysSection: {
-    marginTop: spacing.lg,
-  },
-  daysTitle: {
-    fontSize: typography.fontSize.lg,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.neutral[900],
-    marginBottom: spacing.xs,
-  },
-  daysSubtitle: {
-    fontSize: typography.fontSize.sm,
-    color: colors.neutral[600],
-    marginBottom: spacing.md,
-  },
-  daysList: {
-    gap: spacing.xs,
-  },
+  daysSection: {},
+  daysTitle: {},
+  daysSubtitle: {},
+  daysList: {},
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xl,
-    paddingTop: spacing.md,
-    gap: spacing.md,
   },
   continueButton: {
     flex: 1,

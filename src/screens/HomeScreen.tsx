@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { WorkoutCard } from '../components';
-import { colors, typography, spacing, borderRadius } from '../design-system';
+import { useTheme } from '../design-system';
 import { TrainingPlan, Workout } from '../types';
 
 interface HomeScreenProps {
@@ -18,6 +18,8 @@ interface HomeScreenProps {
   onWorkoutPress: (workout: Workout) => void;
   /** Appelée pour marquer une séance comme faite */
   onToggleComplete: (workoutId: string) => void;
+  /** Appelée pour ouvrir les paramètres */
+  onSettingsPress?: () => void;
 }
 
 /**
@@ -27,7 +29,9 @@ export function HomeScreen({
   plan,
   onWorkoutPress,
   onToggleComplete,
+  onSettingsPress,
 }: HomeScreenProps) {
+  const { colors, typography, spacing, borderRadius } = useTheme();
   const [selectedWeek, setSelectedWeek] = useState(1);
 
   // Calculer le nombre de semaines
@@ -72,30 +76,46 @@ export function HomeScreen({
   }, [plan.workouts]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background.muted }]}>
       {/* Header */}
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>Ton plan</Text>
-          <Text style={styles.title}>
+      <View style={[styles.header, { paddingHorizontal: spacing.lg, paddingTop: spacing.lg, paddingBottom: spacing.md, backgroundColor: colors.background.primary }]}>
+        <View style={styles.headerLeft}>
+          <Text style={[styles.greeting, { fontSize: typography.fontSize.sm, color: colors.text.muted }]}>
+            Ton plan
+          </Text>
+          <Text style={[styles.title, { fontSize: typography.fontSize['2xl'], fontWeight: typography.fontWeight.bold, color: colors.text.primary }]}>
             {plan.userProfile.raceType === 'semi-marathon'
               ? 'Semi-marathon'
               : plan.userProfile.raceType}
           </Text>
         </View>
 
-        {/* Progress global */}
-        <View style={styles.progressBadge}>
-          <Text style={styles.progressText}>{globalStats.percentage}%</Text>
+        <View style={styles.headerRight}>
+          {/* Progress global */}
+          <View style={[styles.progressBadge, { backgroundColor: colors.accent.default, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, borderRadius: borderRadius.full }]}>
+            <Text style={[styles.progressText, { fontSize: typography.fontSize.md, fontWeight: typography.fontWeight.bold, color: colors.text.inverse }]}>
+              {globalStats.percentage}%
+            </Text>
+          </View>
+
+          {/* Settings button */}
+          {onSettingsPress && (
+            <TouchableOpacity
+              style={[styles.settingsButton, { marginLeft: spacing.sm, padding: spacing.sm }]}
+              onPress={onSettingsPress}
+            >
+              <Text style={{ fontSize: 24 }}>⚙️</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 
       {/* Sélecteur de semaine */}
-      <View style={styles.weekSelectorContainer}>
+      <View style={[styles.weekSelectorContainer, { backgroundColor: colors.background.primary, paddingBottom: spacing.md }]}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.weekSelector}
+          contentContainerStyle={[styles.weekSelector, { paddingHorizontal: spacing.lg, gap: spacing.sm }]}
         >
           {Array.from({ length: totalWeeks }, (_, i) => i + 1).map((week) => {
             const weekWorkouts = workoutsByWeek[week] || [];
@@ -108,15 +128,28 @@ export function HomeScreen({
                 key={week}
                 style={[
                   styles.weekButton,
-                  selectedWeek === week && styles.weekButtonActive,
-                  isComplete && styles.weekButtonComplete,
+                  {
+                    paddingHorizontal: spacing.md,
+                    paddingVertical: spacing.sm,
+                    borderRadius: borderRadius.lg,
+                    backgroundColor: selectedWeek === week
+                      ? colors.accent.default
+                      : isComplete
+                        ? colors.accent.soft
+                        : colors.background.muted,
+                    minWidth: 56,
+                  },
                 ]}
                 onPress={() => setSelectedWeek(week)}
               >
                 <Text
                   style={[
                     styles.weekButtonText,
-                    selectedWeek === week && styles.weekButtonTextActive,
+                    {
+                      fontSize: typography.fontSize.sm,
+                      fontWeight: typography.fontWeight.semibold,
+                      color: selectedWeek === week ? colors.text.inverse : colors.text.secondary,
+                    },
                   ]}
                 >
                   S{week}
@@ -125,7 +158,11 @@ export function HomeScreen({
                   <Text
                     style={[
                       styles.weekProgress,
-                      selectedWeek === week && styles.weekProgressActive,
+                      {
+                        fontSize: typography.fontSize.xs,
+                        color: selectedWeek === week ? colors.accent.soft : colors.text.muted,
+                        marginTop: 2,
+                      },
                     ]}
                   >
                     {weekCompleted}/{weekTotal}
@@ -138,9 +175,11 @@ export function HomeScreen({
       </View>
 
       {/* Stats de la semaine */}
-      <View style={styles.weekStats}>
-        <Text style={styles.weekStatsTitle}>Semaine {selectedWeek}</Text>
-        <Text style={styles.weekStatsSubtitle}>
+      <View style={[styles.weekStats, { paddingHorizontal: spacing.lg, paddingVertical: spacing.md }]}>
+        <Text style={[styles.weekStatsTitle, { fontSize: typography.fontSize.lg, fontWeight: typography.fontWeight.semibold, color: colors.text.primary }]}>
+          Semaine {selectedWeek}
+        </Text>
+        <Text style={[styles.weekStatsSubtitle, { fontSize: typography.fontSize.sm, color: colors.text.secondary, marginTop: 2 }]}>
           {weekStats.completed}/{weekStats.total} séances • {weekStats.totalDuration} min
         </Text>
       </View>
@@ -148,13 +187,15 @@ export function HomeScreen({
       {/* Liste des séances */}
       <ScrollView
         style={styles.workoutsList}
-        contentContainerStyle={styles.workoutsContent}
+        contentContainerStyle={[styles.workoutsContent, { padding: spacing.lg, gap: spacing.md }]}
         showsVerticalScrollIndicator={false}
       >
         {currentWeekWorkouts.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyEmoji}>📅</Text>
-            <Text style={styles.emptyText}>Aucune séance cette semaine</Text>
+          <View style={[styles.emptyState, { paddingVertical: spacing['2xl'] }]}>
+            <Text style={[styles.emptyEmoji, { marginBottom: spacing.md }]}>📅</Text>
+            <Text style={[styles.emptyText, { fontSize: typography.fontSize.md, color: colors.text.muted }]}>
+              Aucune séance cette semaine
+            </Text>
           </View>
         ) : (
           currentWeekWorkouts.map((workout) => (
@@ -173,7 +214,7 @@ export function HomeScreen({
 
         {/* Tip */}
         {currentWeekWorkouts.length > 0 && (
-          <Text style={styles.tip}>
+          <Text style={[styles.tip, { fontSize: typography.fontSize.sm, color: colors.text.muted, marginTop: spacing.md }]}>
             💡 Appui long sur une séance pour la marquer comme terminée
           </Text>
         )}
@@ -185,123 +226,55 @@ export function HomeScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral[50],
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.md,
-    backgroundColor: colors.neutral[0],
   },
-  greeting: {
-    fontSize: typography.fontSize.sm,
-    color: colors.neutral[500],
+  headerLeft: {},
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  title: {
-    fontSize: typography.fontSize['2xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: colors.neutral[900],
-  },
-  progressBadge: {
-    backgroundColor: colors.primary[500],
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: borderRadius.full,
-  },
-  progressText: {
-    fontSize: typography.fontSize.md,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.neutral[0],
-  },
+  greeting: {},
+  title: {},
+  progressBadge: {},
+  progressText: {},
+  settingsButton: {},
 
   // Week selector
-  weekSelectorContainer: {
-    backgroundColor: colors.neutral[0],
-    paddingBottom: spacing.md,
-  },
-  weekSelector: {
-    paddingHorizontal: spacing.lg,
-    gap: spacing.sm,
-  },
+  weekSelectorContainer: {},
+  weekSelector: {},
   weekButton: {
     alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: borderRadius.lg,
-    backgroundColor: colors.neutral[100],
-    minWidth: 56,
   },
-  weekButtonActive: {
-    backgroundColor: colors.primary[500],
-  },
-  weekButtonComplete: {
-    backgroundColor: colors.primary[100],
-  },
-  weekButtonText: {
-    fontSize: typography.fontSize.sm,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.neutral[700],
-  },
-  weekButtonTextActive: {
-    color: colors.neutral[0],
-  },
-  weekProgress: {
-    fontSize: typography.fontSize.xs,
-    color: colors.neutral[500],
-    marginTop: 2,
-  },
-  weekProgressActive: {
-    color: colors.primary[100],
-  },
+  weekButtonText: {},
+  weekProgress: {},
 
   // Week stats
-  weekStats: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-  },
-  weekStatsTitle: {
-    fontSize: typography.fontSize.lg,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.neutral[900],
-  },
-  weekStatsSubtitle: {
-    fontSize: typography.fontSize.sm,
-    color: colors.neutral[600],
-    marginTop: 2,
-  },
+  weekStats: {},
+  weekStatsTitle: {},
+  weekStatsSubtitle: {},
 
   // Workouts list
   workoutsList: {
     flex: 1,
   },
-  workoutsContent: {
-    padding: spacing.lg,
-    gap: spacing.md,
-  },
+  workoutsContent: {},
 
   // Empty state
   emptyState: {
     alignItems: 'center',
-    paddingVertical: spacing['2xl'],
   },
   emptyEmoji: {
     fontSize: 48,
-    marginBottom: spacing.md,
   },
-  emptyText: {
-    fontSize: typography.fontSize.md,
-    color: colors.neutral[500],
-  },
+  emptyText: {},
 
   // Tip
   tip: {
-    fontSize: typography.fontSize.sm,
-    color: colors.neutral[500],
     textAlign: 'center',
-    marginTop: spacing.md,
     fontStyle: 'italic',
   },
 });
