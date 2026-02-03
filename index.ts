@@ -1,8 +1,17 @@
 import { registerRootComponent } from 'expo';
+import { SHOW_STORYBOOK } from './app.config';
 
 import App from './App';
+import StorybookUIRoot from './.rnstorybook';
 
-// registerRootComponent calls AppRegistry.registerComponent('main', () => App);
-// It also ensures that whether you load the app in Expo Go or in a native build,
-// the environment is set up appropriately
-registerRootComponent(App);
+/**
+ * Point d'entrée de l'application
+ *
+ * Pour basculer vers Storybook :
+ * 1. Ouvre app.config.ts
+ * 2. Mets SHOW_STORYBOOK à true
+ * 3. Recharge l'app (secoue le téléphone → Reload)
+ */
+const RootComponent = SHOW_STORYBOOK ? StorybookUIRoot : App;
+
+registerRootComponent(RootComponent);
